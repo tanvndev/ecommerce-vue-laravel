@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "axios": "^1.7.2",
+    "vee-validate": "^4.13.1",
+    "yup": "^1.4.0",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },

@@ -1,7 +1,4 @@
 <template>
-  <LoginView />
+  <RouterView />
 </template>
-
-<script setup>
-import LoginView from './views/backend/LoginView.vue';
-</script>
+<script setup></script>

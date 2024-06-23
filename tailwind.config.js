@@ -22,11 +22,11 @@ export default {
     },
     fontFamily: {
       body: [
+        'system-ui',
         'Inter',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',
-        'system-ui',
         'Segoe UI',
         'Roboto',
         'Helvetica Neue',
@@ -39,11 +39,11 @@ export default {
         'Noto Color Emoji'
       ],
       sans: [
+        'system-ui',
         'Inter',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',
-        'system-ui',
         'Segoe UI',
         'Roboto',
         'Helvetica Neue',

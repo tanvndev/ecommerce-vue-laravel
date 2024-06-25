@@ -23,12 +23,13 @@ class AuthService {
       });
       return {
         success: true,
-        data: user
+        data: user,
+        messages: response.messages
       };
     } catch (error) {
       return {
         success: false,
-        messages: [error.message]
+        messages: error.response.data.messages
       };
     }
   }

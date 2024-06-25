@@ -13,4 +13,21 @@
 <script setup>
 import SidebarView from './SidebarView.vue';
 import HeaderView from './HeaderView.vue';
+import { useStore } from 'vuex';
+import { useSweetAlert } from '@/utils/swal';
+import { computed, watchEffect } from 'vue';
+
+const { showToast } = useSweetAlert();
+
+const store = useStore();
+const isShowToast = computed(() => store.getters['swalStore/getIsShow']);
+
+watchEffect(() => {
+  if (isShowToast.value) {
+    const type = store.getters['swalStore/getType'];
+    const title = store.getters['swalStore/getMessage'];
+    showToast(title, type);
+    store.dispatch('swalStore/hideMessage');
+  }
+});
 </script>

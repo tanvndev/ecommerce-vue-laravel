@@ -99,14 +99,14 @@ const store = useStore();
 const errors = ref({});
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
-    email: yup
-      .string()
-      .email('Email không đúng định dạng email.')
-      .required('Email không được để trống.'),
-    password: yup
-      .string()
-      .min(6, 'Mật khẩu phải có ít nhất 6 ký tự.')
-      .required('Mật khẩu không được để trống.')
+    // email: yup
+    //   .string()
+    //   .email('Email không đúng định dạng email.')
+    //   .required('Email không được để trống.'),
+    // password: yup
+    //   .string()
+    //   .min(6, 'Mật khẩu phải có ít nhất 6 ký tự.')
+    //   .required('Mật khẩu không được để trống.')
   })
 });
 
@@ -117,7 +117,9 @@ const onSubmit = handleSubmit(async (values) => {
     return (errors.value = formatMessages(authState.messages));
   }
 
+  store.dispatch('swalStore/showMessage', { type: 'success', message: 'Đăng nhập thành công.' });
   errors.value = {};
+  // showToast('Đăng nhập thành công.');
   router.push({ name: 'dashboard' });
 });
 

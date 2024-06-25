@@ -36,10 +36,10 @@ instance.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        await store.dispatch('auth/refreshToken');
+        await store.dispatch('authStore/refreshToken');
         return instance(originalRequest);
       } catch (e) {
-        store.dispatch('auth/logout');
+        store.dispatch('authStore/logout');
         return Promise.reject(e);
       }
     }

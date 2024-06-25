@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '@/views/backend/LoginView.vue';
 import DashboardView from '@/views/backend/DashboardView.vue';
+import UserIndexView from '@/views/backend/User/UserIndexView.vue';
+import UserStoreView from '@/views/backend/User/UserStoreView.vue';
 
 const routes = [
   {
@@ -16,6 +18,16 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: DashboardView
+  },
+  {
+    path: '/user/index',
+    name: 'user.index',
+    component: UserIndexView
+  },
+  {
+    path: '/user/store',
+    name: 'user.store',
+    component: UserStoreView
   }
 ];
 

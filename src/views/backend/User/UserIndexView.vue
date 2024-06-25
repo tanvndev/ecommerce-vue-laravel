@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="h-screen w-[100%] bg-red-300">dashboard</div>
+      <div class="container mx-auto h-screen">User index</div>
     </template>
   </MasterLayout>
 </template>

@@ -22,7 +22,9 @@
               role="alert"
               v-if="Object.keys(errors).length"
             >
-              <span v-for="error in errors" :key="error">{{ error }}</span>
+              <span class="mb-1 block last:mb-0" v-for="error in errors" :key="error">{{
+                error
+              }}</span>
             </div>
             <div>
               <label for="email" class="mb-2 block text-sm font-medium text-gray-900">Email</label>
@@ -38,7 +40,7 @@
               >
               <CustomInput
                 name="password"
-                type="text"
+                type="password"
                 class-name="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600"
               />
             </div>
@@ -72,7 +74,11 @@
             </button>
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
               Bạn chưa có tài khoản?
-              <a href="#" class="font-medium text-primary-600 hover:underline">Đăng ký</a>
+              <RouterLink
+                :to="{ name: 'dashboard' }"
+                class="font-medium text-primary-600 hover:underline"
+                >Đăng ký</RouterLink
+              >
             </p>
           </form>
         </div>
@@ -81,18 +87,22 @@
   </section>
 </template>
 <script setup>
-import axios from 'axios';
 import CustomInput from '@/components/backend/CustomInput.vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref } from 'vue';
-const errors = ref({});
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-console.log(apiBaseUrl);
+import { RouterLink } from 'vue-router';
+import router from '@/router';
+import { useStore } from 'vuex';
 
-const { handleSubmit, resetForm } = useForm({
+const store = useStore();
+const errors = ref({});
+const { handleSubmit } = useForm({
   validationSchema: yup.object({
-    email: yup.string().email('Email chưa đúng định dạng.').required('Email không được để trống.'),
+    email: yup
+      .string()
+      .email('Email không đúng định dạng email.')
+      .required('Email không được để trống.'),
     password: yup
       .string()
       .min(6, 'Mật khẩu phải có ít nhất 6 ký tự.')
@@ -101,26 +111,21 @@ const { handleSubmit, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  const { email, password } = values;
-  try {
-    const { data } = await axios.post(apiBaseUrl + '/auth/login', {
-      email,
-      password
-    });
-    if (data.code === 401) {
-      errors.value = data.messages;
-    } else {
-      errors.value = {};
-      console.log('Login successful', data);
-      // Handle successful login here
-      resetForm();
-    }
-  } catch (error) {
-    if (error.response && error.response.data) {
-      errors.value = error.response.data.errors || {};
-    } else {
-      console.error('An unexpected error occurred:', error);
-    }
+  await store.dispatch('auth/login', values);
+  const authState = store.state.auth;
+  if (!authState.status.loggedIn) {
+    return (errors.value = formatMessages(authState.messages));
   }
+
+  errors.value = {};
+  router.push({ name: 'dashboard' });
 });
+
+const formatMessages = (messages) => {
+  const formattedMessages = [];
+  for (const key in messages) {
+    formattedMessages.push(Array.isArray(messages[key]) ? messages[key][0] : messages[0]);
+  }
+  return formattedMessages;
+};
 </script>

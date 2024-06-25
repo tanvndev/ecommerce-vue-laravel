@@ -1,51 +1,72 @@
 <template>
-  <div class="h-screen w-64 overflow-y-auto bg-white">
+  <aside
+    class="z-30 hidden w-64 flex-shrink-0 overflow-y-auto bg-white shadow-sm dark:bg-gray-800 lg:block"
+  >
     <div class="py-4 text-gray-500">
-      <a href="" class="block px-5 text-center"
+      <a href="" class="flex items-center justify-center"
         ><img
-          class="w-[150px] object-contain object-center text-center"
+          class="w-[120px] object-contain object-center"
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjsScWYmyfPv3XdkNdEFVJ1wlDKMOgcSWUcg&s"
           alt="logo"
       /></a>
 
       <ul>
-        <li class="relative">
-          <a href="" class="block px-6 py-4 text-[14px]">
-            <span
-              class="absolute inset-y-0 left-0 w-1 rounded-br-lg rounded-tr-lg bg-emerald-500"
-              aria-hidden="true"
-            ></span>
+        <li
+          v-for="item in sidebarData"
+          :key="item.name"
+          :class="{
+            active: isActive(item),
+            'px-6 py-4': item.subMenu.length > 0,
+            relative: true
+          }"
+        >
+          <button
+            type="button"
+            class="block text-sm"
+            @click="isOpen = !isOpen"
+            v-if="item.subMenu.length > 0"
+          >
             <div
-              class="text-gay-500 inline-flex items-center text-[15px] text-emerald-600 transition-colors duration-150 hover:text-emerald-600 active:text-emerald-600"
+              class="link-item inline-flex items-center text-[15px] transition-colors duration-150 hover:text-emerald-600"
             >
-              <i class="ti-home mr-3"></i>
-              <span class="font-semibold"> Dashboard </span>
-            </div>
-          </a>
-        </li>
-        <li class="relative px-6 py-4">
-          <button type="button" class="block text-[14px]">
-            <div
-              class="inline-flex items-center text-[15px] text-gray-500 transition-colors duration-150 hover:text-emerald-600"
-            >
-              <i class="ti-harddrives mr-3"></i>
-              <span class="font-semibold"> Catalog </span>
-              <i class="ti-angle-right ml-6 text-[10px]"></i>
+              <span
+                class="line-left absolute inset-y-0 left-0 w-1 rounded-br-lg rounded-tr-lg bg-emerald-500"
+                aria-hidden="true"
+              ></span>
+              <i :class="`${item.icon} mr-3`"></i>
+              <span class="font-semibold"> {{ item.name }} </span>
+              <i
+                :class="['ml-6 text-[10px]', item.isOpen ? 'ti-angle-down' : 'ti-angle-right']"
+              ></i>
             </div>
           </button>
 
+          <div class="block px-6 py-4 text-sm" v-else>
+            <RouterLink
+              :to="{ name: item.route }"
+              class="link-item inline-flex items-center text-[15px] transition-colors duration-150 hover:text-emerald-600"
+            >
+              <span
+                class="line-left absolute inset-y-0 left-0 w-1 rounded-br-lg rounded-tr-lg bg-emerald-500"
+                aria-hidden="true"
+              ></span>
+              <i :class="`${item.icon} mr-3`"></i>
+              <span class="font-semibold capitalize"> {{ item.name }} </span>
+            </RouterLink>
+          </div>
+
           <ul
-            class="overflow-hidden rounded-md p-2 text-sm font-medium text-gray-500 dark:bg-gray-900"
+            class="bg-gray-00 mt-2 overflow-hidden rounded-md p-2 text-sm font-medium transition-all duration-150 dark:bg-gray-900"
+            v-if="item.subMenu.length > 0 && isOpen"
           >
-            <li v-for="i in 3" :key="i">
-              <a
-                class="font-serif inline-flex cursor-pointer items-center py-1 text-sm text-gray-600 transition-colors duration-150 hover:text-emerald-600"
-                rel="noreferrer"
-                href="/products"
+            <li class="mb-1" v-for="itemSub in item.subMenu" :key="itemSub.route">
+              <RouterLink
+                class="sub-link font-serif inline-flex cursor-pointer items-center py-1 text-sm transition-colors duration-150 hover:text-emerald-600"
+                :to="{ name: itemSub.route }"
               >
                 <i class="ti-minus"></i>
-                <span class="ml-2">Products</span>
-              </a>
+                <span class="ml-2">{{ itemSub.name }}</span>
+              </RouterLink>
             </li>
           </ul>
         </li>
@@ -73,11 +94,50 @@
                 stroke-linejoin="round"
                 stroke-width="32"
                 d="M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40m64 160l80-80-80-80m-192 80h256"
-              ></path></svg
-            ><span class="text-sm">Log Out</span></span
-          >
+              ></path>
+            </svg>
+            <span class="text-sm">Đăng xuất</span>
+          </span>
         </button>
       </div>
     </div>
-  </div>
+  </aside>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
+import axios from '@/configs/axios.js';
+
+const sidebarData = ref([]);
+const isOpen = ref(false);
+const route = useRoute();
+const isActive = (item) => {
+  return route.name == item.route || item.subMenu.some((sub) => route.name == sub.route);
+};
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('/dashboard/getSidebar');
+    if (response.status !== 200) {
+      return false;
+    }
+    sidebarData.value = response.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+</script>
+
+<style scoped>
+.line-left {
+  display: none;
+}
+.active .line-left {
+  display: block;
+}
+.active .link-item,
+.active .sub-link {
+  color: #10b981;
+}
+</style>

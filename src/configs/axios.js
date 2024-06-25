@@ -1,6 +1,5 @@
 import axios from 'axios';
 import store from '@/store';
-import Cookies from 'js-cookie';
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL
@@ -11,7 +10,7 @@ instance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
 
-    const token = store.getters['auth/getToken'];
+    const token = store.getters['authStore/getToken'];
     if (token && token != null) {
       config.headers.Authorization = `Bearer ${token}`;
     }

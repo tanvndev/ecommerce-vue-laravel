@@ -120,7 +120,7 @@ import { useStore } from 'vuex';
 import { computed } from 'vue';
 
 const store = useStore();
-const user = computed(() => store.getters['auth/getUser']);
+const user = computed(() => store.getters['authStore/getUser']);
 </script>
 
 <style scoped>

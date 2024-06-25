@@ -107,7 +107,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
-import axios from '@/configs/axios.js';
+import axios from '@/configs/axios';
 
 const sidebarData = ref([]);
 const isOpen = ref(false);

@@ -1,4 +1,4 @@
-import axios from '@/configs/axios.js';
+import axios from '@/configs/axios';
 import Cookies from 'js-cookie';
 
 class AuthService {

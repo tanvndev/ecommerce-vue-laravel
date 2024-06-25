@@ -1,12 +1,11 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="h-screen w-[100%] bg-red-300">dashboard</div>
+      <div class="container mx-auto h-screen">Dashboard</div>
     </template>
   </MasterLayout>
 </template>
 
 <script setup>
 import MasterLayout from '@/components/backend/MasterLayout.vue';
-import axios from '@/configs/axios.js';
 </script>

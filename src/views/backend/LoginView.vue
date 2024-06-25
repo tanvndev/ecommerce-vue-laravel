@@ -111,8 +111,8 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  await store.dispatch('auth/login', values);
-  const authState = store.state.auth;
+  await store.dispatch('authStore/login', values);
+  const authState = store.state.authStore;
   if (!authState.status.loggedIn) {
     return (errors.value = formatMessages(authState.messages));
   }

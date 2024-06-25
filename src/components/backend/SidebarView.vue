@@ -105,27 +105,19 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
-import axios from '@/configs/axios';
+import { useStore } from 'vuex';
 
-const sidebarData = ref([]);
+const sidebarData = ref(null);
 const isOpen = ref(false);
 const route = useRoute();
+const store = useStore();
 const isActive = (item) => {
   return route.name == item.route || item.subMenu.some((sub) => route.name == sub.route);
 };
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('/dashboard/getSidebar');
-    if (response.status !== 200) {
-      return false;
-    }
-    sidebarData.value = response.data;
-  } catch (error) {
-    console.log(error);
-  }
+onMounted(() => {
+  sidebarData.value = store.getters['languageStore/getSidebar'];
 });
 </script>
 

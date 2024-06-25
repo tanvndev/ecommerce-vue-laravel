@@ -121,6 +121,8 @@ import { computed } from 'vue';
 
 const store = useStore();
 const user = computed(() => store.getters['authStore/getUser']);
+
+store.commit('languageStore/setLanguage', 'vn');
 </script>
 
 <style scoped>

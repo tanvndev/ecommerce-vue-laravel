@@ -1,7 +1,7 @@
 <template>
   <div>
     <input v-model="value" :class="computedClass" :id="name" :type="type" />
-    <small class="mt-2 text-red-500">{{ errorMessage }}</small>
+    <small class="mt-[6px] block text-red-500">{{ errorMessage }}</small>
   </div>
 </template>
 

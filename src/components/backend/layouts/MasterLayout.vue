@@ -1,8 +1,8 @@
 <template>
   <div class="flex h-screen">
-    <SidebarView />
+    <SidebarComponent />
     <div class="flex w-full flex-1 flex-col">
-      <HeaderView />
+      <HeaderComponent />
       <main class="h-full overflow-y-auto bg-[#f5f6f7]">
         <slot name="template"></slot>
       </main>
@@ -11,8 +11,7 @@
 </template>
 
 <script setup>
-import SidebarView from './SidebarView.vue';
-import HeaderView from './HeaderView.vue';
+import { SidebarComponent, HeaderComponent } from '@/components/backend';
 import { useStore } from 'vuex';
 import { useAntToast } from '@/utils/antToast';
 import { computed, watchEffect } from 'vue';

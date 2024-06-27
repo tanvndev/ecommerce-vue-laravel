@@ -3,7 +3,7 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto h-screen">
-        <BreadcrumbView :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="pageTitle" />
         <a-card>
           <a-space :size="12" class="flex justify-end">
             <a-dropdown>
@@ -79,8 +79,8 @@
 </template>
 
 <script setup>
-import BreadcrumbView from '@/components/backend/BreadcrumbView.vue';
-import MasterLayout from '@/components/backend/MasterLayout.vue';
+import BreadcrumbComponent from '@/components/backend/includes/BreadcrumbComponent.vue';
+import MasterLayout from '@/components/backend/layouts/MasterLayout.vue';
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 const pageTitle = 'Danh sách nhóm thành viên';

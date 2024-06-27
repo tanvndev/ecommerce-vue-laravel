@@ -87,14 +87,14 @@
   </section>
 </template>
 <script setup>
-import InputComponent from '@/components/backend/InputComponent.vue';
+import { InputComponent, AleartError } from '@/components/backend';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import router from '@/router';
 import { useStore } from 'vuex';
-
+import { formatMessages } from '@/utils/format';
 const store = useStore();
 const errors = ref({});
 const { handleSubmit } = useForm({
@@ -121,12 +121,4 @@ const onSubmit = handleSubmit(async (values) => {
   errors.value = {};
   router.push({ name: 'dashboard' });
 });
-
-const formatMessages = (messages) => {
-  const formattedMessages = [];
-  for (const key in messages) {
-    formattedMessages.push(Array.isArray(messages[key]) ? messages[key][0] : messages[0]);
-  }
-  return formattedMessages;
-};
 </script>

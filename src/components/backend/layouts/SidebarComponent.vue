@@ -103,7 +103,6 @@ const store = useStore();
 const isActive = (item) => {
   return route.name == item.route || item.subMenu.some((sub) => route.name === sub.route);
 };
-console.log(route.name);
 onMounted(() => {
   sidebarData.value = store.getters['languageStore/getSidebar'];
 });

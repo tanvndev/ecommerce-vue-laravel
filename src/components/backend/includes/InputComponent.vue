@@ -2,19 +2,18 @@
   <div>
     <a-input
       v-model:value="value"
-      :class="computedClass"
+      :class="className"
       :id="props.name"
       :type="props.type"
       :placeholder="props.placeholder"
       :status="errorMessage ? 'error' : ''"
     />
-    <small class="mt-[6px] block text-red-500">{{ errorMessage }}</small>
+    <span class="mt-[6px] block text-[12px] text-red-500">{{ errorMessage }}</span>
   </div>
 </template>
 
 <script setup>
 import { useField } from 'vee-validate';
-import { computed } from 'vue';
 
 const props = defineProps({
   name: {
@@ -23,7 +22,7 @@ const props = defineProps({
   },
   className: {
     type: String,
-    default: ''
+    default: 'h-[40px]'
   },
   type: {
     type: String,
@@ -37,8 +36,4 @@ const props = defineProps({
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
-
-const computedClass = computed(() => {
-  return `${props.className} ${errorMessage.value ? ' border-red-500' : ''}`;
-});
 </script>

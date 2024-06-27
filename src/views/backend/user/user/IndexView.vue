@@ -7,5 +7,5 @@
 </template>
 
 <script setup>
-import MasterLayout from '@/components/backend/MasterLayout.vue';
+import MasterLayout from '@/components/backend/layouts/MasterLayout.vue';
 </script>

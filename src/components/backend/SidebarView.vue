@@ -36,7 +36,10 @@
               <i :class="`${item.icon} mr-3`"></i>
               <span class="font-semibold"> {{ item.name }} </span>
               <i
-                :class="['ml-6 text-[10px]', item.isOpen ? 'ti-angle-down' : 'ti-angle-right']"
+                :class="[
+                  'ml-6 text-[10px]',
+                  isOpen ? 'far fa-chevron-down' : 'far fa-chevron-right'
+                ]"
               ></i>
             </div>
           </button>
@@ -63,9 +66,10 @@
               <RouterLink
                 class="sub-link font-serif inline-flex cursor-pointer items-center py-1 text-sm transition-colors duration-150 hover:text-emerald-600"
                 :to="{ name: itemSub.route }"
+                exactActiveClass="text-[#10b981]"
               >
-                <i class="ti-minus"></i>
-                <span class="ml-2">{{ itemSub.name }}</span>
+                <i class="far fa-dot-circle text-[6px]"></i>
+                <span class="ml-1">{{ itemSub.name }}</span>
               </RouterLink>
             </li>
           </ul>
@@ -77,25 +81,8 @@
           class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-transparent bg-emerald-500 px-5 py-3 align-bottom font-medium leading-5 text-white transition-colors duration-150 hover:bg-emerald-600 focus:outline-none active:bg-emerald-600"
           type="button"
         >
-          <span class="flex items-center"
-            ><svg
-              stroke="currentColor"
-              fill="currentColor"
-              stroke-width="0"
-              viewBox="0 0 512 512"
-              class="mr-3 text-lg"
-              height="1em"
-              width="1em"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="32"
-                d="M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40m64 160l80-80-80-80m-192 80h256"
-              ></path>
-            </svg>
+          <span class="flex items-center">
+            <i class="far fa-sign-out mr-3"></i>
             <span class="text-sm">Đăng xuất</span>
           </span>
         </button>
@@ -114,8 +101,9 @@ const isOpen = ref(false);
 const route = useRoute();
 const store = useStore();
 const isActive = (item) => {
-  return route.name == item.route || item.subMenu.some((sub) => route.name == sub.route);
+  return route.name == item.route || item.subMenu.some((sub) => route.name === sub.route);
 };
+console.log(route.name);
 onMounted(() => {
   sidebarData.value = store.getters['languageStore/getSidebar'];
 });
@@ -128,8 +116,7 @@ onMounted(() => {
 .active .line-left {
   display: block;
 }
-.active .link-item,
-.active .sub-link {
+.active .link-item {
   color: #10b981;
 }
 </style>

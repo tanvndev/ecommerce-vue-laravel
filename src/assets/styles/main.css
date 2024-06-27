@@ -1,6 +1,11 @@
 @import './normalize.css';
 @import './base.css';
 
+/* Ant custom css */
+.ant-card {
+  border: none;
+}
+
 .pulse {
   cursor: pointer;
   display: block;

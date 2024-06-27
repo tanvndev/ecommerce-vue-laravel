@@ -28,7 +28,7 @@
             </div>
             <div>
               <label for="email" class="mb-2 block text-sm font-medium text-gray-900">Email</label>
-              <CustomInput
+              <InputComponent
                 name="email"
                 type="text"
                 class-name="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600"
@@ -38,7 +38,7 @@
               <label for="password" class="mb-2 block text-sm font-medium text-gray-900"
                 >Mật khẩu</label
               >
-              <CustomInput
+              <InputComponent
                 name="password"
                 type="password"
                 class-name="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600"
@@ -87,7 +87,7 @@
   </section>
 </template>
 <script setup>
-import CustomInput from '@/components/backend/CustomInput.vue';
+import InputComponent from '@/components/backend/InputComponent.vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref } from 'vue';
@@ -99,14 +99,14 @@ const store = useStore();
 const errors = ref({});
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
-    // email: yup
-    //   .string()
-    //   .email('Email không đúng định dạng email.')
-    //   .required('Email không được để trống.'),
-    // password: yup
-    //   .string()
-    //   .min(6, 'Mật khẩu phải có ít nhất 6 ký tự.')
-    //   .required('Mật khẩu không được để trống.')
+    email: yup
+      .string()
+      .email('Email không đúng định dạng email.')
+      .required('Email không được để trống.'),
+    password: yup
+      .string()
+      .min(6, 'Mật khẩu phải có ít nhất 6 ký tự.')
+      .required('Mật khẩu không được để trống.')
   })
 });
 
@@ -117,9 +117,8 @@ const onSubmit = handleSubmit(async (values) => {
     return (errors.value = formatMessages(authState.messages));
   }
 
-  store.dispatch('swalStore/showMessage', { type: 'success', message: 'Đăng nhập thành công.' });
+  store.dispatch('antStore/showMessage', { type: 'success', message: 'Đăng nhập thành công.' });
   errors.value = {};
-  // showToast('Đăng nhập thành công.');
   router.push({ name: 'dashboard' });
 });
 

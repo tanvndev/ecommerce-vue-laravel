@@ -1,6 +1,13 @@
 <template>
   <div>
-    <input v-model="value" :class="computedClass" :id="name" :type="type" />
+    <a-input
+      v-model:value="value"
+      :class="computedClass"
+      :id="props.name"
+      :type="props.type"
+      :placeholder="props.placeholder"
+      :status="errorMessage ? 'error' : ''"
+    />
     <small class="mt-[6px] block text-red-500">{{ errorMessage }}</small>
   </div>
 </template>
@@ -16,12 +23,15 @@ const props = defineProps({
   },
   className: {
     type: String,
-    default:
-      'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600'
+    default: ''
   },
   type: {
     type: String,
     default: 'text'
+  },
+  placeholder: {
+    type: String,
+    default: ''
   }
 });
 

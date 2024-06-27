@@ -8,5 +8,4 @@
 
 <script setup>
 import MasterLayout from '@/components/backend/MasterLayout.vue';
-import axios from '@/configs/axios.js';
 </script>

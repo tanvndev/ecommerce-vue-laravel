@@ -1,12 +1,12 @@
 const sidebar = [
   {
-    icon: 'ti-home',
+    icon: 'fas fa-home-lg-alt',
     name: 'Dashboard',
     route: 'dashboard',
     subMenu: []
   },
   {
-    icon: 'ti-harddrives',
+    icon: 'fas fa-users-medical',
     name: 'QL Thành viên',
     route: '',
     subMenu: [
@@ -16,7 +16,7 @@ const sidebar = [
       },
       {
         name: 'QL Nhóm thành viên',
-        route: 'user.index'
+        route: 'user.catalogue.index'
       }
     ]
   }

@@ -14,20 +14,35 @@
 import SidebarView from './SidebarView.vue';
 import HeaderView from './HeaderView.vue';
 import { useStore } from 'vuex';
-import { useSweetAlert } from '@/utils/swal';
+import { useAntToast } from '@/utils/antToast';
 import { computed, watchEffect } from 'vue';
-
-const { showToast } = useSweetAlert();
+const { showMessage } = useAntToast();
 
 const store = useStore();
-const isShowToast = computed(() => store.getters['swalStore/getIsShow']);
+const isShowToast = computed(() => store.getters['antStore/getIsShow']);
 
 watchEffect(() => {
   if (isShowToast.value) {
-    const type = store.getters['swalStore/getType'];
-    const title = store.getters['swalStore/getMessage'];
-    showToast(title, type);
-    store.dispatch('swalStore/hideMessage');
+    const type = store.getters['antStore/getType'];
+    const message = store.getters['antStore/getMessage'];
+    showMessage(type, message);
+    store.dispatch('antStore/removeMessage');
   }
 });
 </script>
+
+<style scoped>
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #acacac;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #797979;
+}
+</style>

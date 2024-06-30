@@ -4,10 +4,7 @@ import Cookies from 'js-cookie';
 class AuthService {
   async login(payload) {
     try {
-      const response = await axios.post('/auth/login', {
-        email: payload.email,
-        password: payload.password
-      });
+      const response = await axios.post('/auth/login', payload);
 
       if (response.status !== 200) {
         return {

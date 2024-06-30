@@ -4,4 +4,5 @@ const PUBLISH = {
   2: 'Chưa xuất bản'
 };
 
-export { PUBLISH };
+const PAGESIZE = ['10', '20', '30', '50', '100'];
+export { PUBLISH, PAGESIZE };

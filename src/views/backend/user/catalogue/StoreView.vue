@@ -35,20 +35,26 @@
 </template>
 
 <script setup>
-import { MasterLayout, BreadcrumbComponent, AleartError } from '@/components/backend';
-import { ref } from 'vue';
+import {
+  MasterLayout,
+  BreadcrumbComponent,
+  AleartError,
+  InputComponent
+} from '@/components/backend';
+import { onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import InputComponent from '@/components/backend/includes/InputComponent.vue';
 import { formatMessages } from '@/utils/format';
 import router from '@/router';
 import { useStore } from 'vuex';
 import UserService from '@/services/users/UserCatalogueService';
-
 const pageTitle = 'Thêm mới nhóm thành viên';
+const id = router.currentRoute.value.params.id || null;
 const store = useStore();
+
 const errors = ref({});
-const { handleSubmit } = useForm({
+
+const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({
     name: yup.string().required('Tên nhóm thành viên không được để trống.'),
     description: yup.string().required('Mô tả nhóm thành viên không được để trống.')
@@ -56,7 +62,12 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  const response = await UserService.create(values);
+  let response = null;
+  if (router.currentRoute.value.name.includes('update')) {
+    response = await UserService.update(id, values);
+  } else {
+    response = await UserService.create(values);
+  }
 
   if (!response.success) {
     return (errors.value = formatMessages(response.messages));
@@ -65,5 +76,16 @@ const onSubmit = handleSubmit(async (values) => {
   store.dispatch('antStore/showMessage', { type: 'success', message: response.messages });
   errors.value = {};
   router.push({ name: 'user.catalogue.index' });
+});
+
+const getOne = async () => {
+  const response = await UserService.getOne(id);
+  setValues({ name: response.data?.name, description: response.data?.description });
+};
+
+onMounted(() => {
+  if (id && id > 0) {
+    getOne();
+  }
 });
 </script>

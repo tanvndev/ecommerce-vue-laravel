@@ -3,7 +3,7 @@
     <label class="switch">
       <input
         type="checkbox"
-        @change="handleChangePublish(props.record.id, props.record.publish, props.modelName)"
+        @change="handleChangePublish($event)"
         :checked="props.record?.publish == 1 ? true : false"
       />
       <span class="slider"></span>
@@ -12,15 +12,27 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import BaseService from '@/services/BaseService';
+import { defineProps } from 'vue';
+import { useStore } from 'vuex';
 
-// const emits = defineEmits(['onPublish']);
+const store = useStore();
 const props = defineProps({
   record: Object,
+  field: String,
   modelName: String
 });
 
-const handleChangePublish = (id, publish, modelName) => {
-  console.log(id, publish, modelName);
+const handleChangePublish = async (event) => {
+  const payload = {
+    modelName: props.modelName,
+    modelId: props.record?.id,
+    field: props.field,
+    value: event.target.checked ? 1 : 2
+  };
+  const response = await BaseService.changeStatus(payload);
+  const type = response.success ? 'success' : 'error';
+
+  store.dispatch('antStore/showMessage', { type, message: response.messages });
 };
 </script>

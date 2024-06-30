@@ -5,6 +5,7 @@
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-card class="mt-3">
+            <AleartError :errors="errors" />
             <a-row :gutter="16">
               <a-col :span="12">
                 <label for="name" class="mb-2 block text-sm font-medium text-gray-900"
@@ -34,17 +35,17 @@
 </template>
 
 <script setup>
-import { MasterLayout, BreadcrumbComponent } from '@/components/backend';
+import { MasterLayout, BreadcrumbComponent, AleartError } from '@/components/backend';
 import { ref } from 'vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import InputComponent from '@/components/backend/includes/InputComponent.vue';
-const pageTitle = 'Thêm mới nhóm thành viên';
 import { formatMessages } from '@/utils/format';
-
 import router from '@/router';
 import { useStore } from 'vuex';
+import UserService from '@/services/users/UserCatalogueService';
 
+const pageTitle = 'Thêm mới nhóm thành viên';
 const store = useStore();
 const errors = ref({});
 const { handleSubmit } = useForm({
@@ -55,15 +56,14 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
-  // await store.dispatch('authStore/login', values);
-  // const authState = store.state.authStore;
-  // if (!authState.status.loggedIn) {
-  //   return (errors.value = formatMessages(authState.messages));
-  // }
+  const response = await UserService.create(values);
 
-  // store.dispatch('antStore/showMessage', { type: 'success', message: 'Đăng nhập thành công.' });
-  // errors.value = {};
-  // router.push({ name: 'dashboard' });
+  if (!response.success) {
+    return (errors.value = formatMessages(response.messages));
+  }
+
+  store.dispatch('antStore/showMessage', { type: 'success', message: response.messages });
+  errors.value = {};
+  router.push({ name: 'user.catalogue.index' });
 });
 </script>

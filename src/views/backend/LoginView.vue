@@ -17,15 +17,7 @@
             Đăng nhập
           </h1>
           <form class="space-y-4 md:space-y-6" @submit.prevent="onSubmit">
-            <div
-              class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-gray-800 dark:text-red-400"
-              role="alert"
-              v-if="Object.keys(errors).length"
-            >
-              <span class="mb-1 block last:mb-0" v-for="error in errors" :key="error">{{
-                error
-              }}</span>
-            </div>
+            <AleartError :errors="errors" />
             <div>
               <label for="email" class="mb-2 block text-sm font-medium text-gray-900">Email</label>
               <InputComponent
@@ -95,6 +87,7 @@ import { RouterLink } from 'vue-router';
 import router from '@/router';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
+
 const store = useStore();
 const errors = ref({});
 const { handleSubmit } = useForm({

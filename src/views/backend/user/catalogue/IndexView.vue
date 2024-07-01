@@ -44,7 +44,7 @@
                   @onDelete="onDelete"
                   :id="record.id"
                   :routeUpdate="routeUpdate"
-                  :modelName="modelName"
+                  :endpoint="endpoint"
                 />
               </template>
             </template>
@@ -68,11 +68,13 @@ import {
 } from '@/components/backend';
 import UserCatalogueService from '@/services/users/UserCatalogueService';
 import { PAGESIZE } from '@/lang/vn/constants';
+
 // Data static
 const pageTitle = 'Danh sách nhóm thành viên';
 const modelName = 'UserCatalogue';
 const routeCreate = 'user.catalogue.store';
 const routeUpdate = 'user.catalogue.update';
+const endpoint = 'users/catalogues';
 
 // Data
 const filterOptions = ref({});
@@ -102,9 +104,9 @@ const columns = [
   },
   {
     title: 'Số thành viên',
-    dataIndex: 'age',
-    key: 'age',
-    sorter: (a, b) => a.age - b.age
+    dataIndex: 'users_count',
+    key: 'users_count',
+    sorter: (a, b) => a.users_count - b.users_count
   },
   {
     title: 'Mô tả',
@@ -151,8 +153,7 @@ const fetchUserData = async () => {
 const handleTableChange = async (paginationTable, filters, sorter) => {
   pagination.value.current = paginationTable.current || 1;
   pagination.value.pageSize = paginationTable.pageSize || 10;
-
-  await fetchUserData();
+  fetchUserData();
 };
 
 const onFilterOptions = (filterValue) => {
@@ -166,7 +167,6 @@ const onChangeToolbox = () => {
 
 const onDelete = (key) => {
   dataSource.value = dataSource.value.filter((item) => item.key !== key);
-  // fetchUserData()
 };
 
 // Lifecycle hook

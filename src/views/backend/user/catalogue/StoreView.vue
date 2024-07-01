@@ -43,16 +43,16 @@ import {
 } from '@/components/backend';
 import { onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
-import * as yup from 'yup';
 import { formatMessages } from '@/utils/format';
-import router from '@/router';
 import { useStore } from 'vuex';
+import * as yup from 'yup';
+import router from '@/router';
 import UserService from '@/services/users/UserCatalogueService';
-const pageTitle = 'Thêm mới nhóm thành viên';
+
+const pageTitle = ref('Thêm mới nhóm thành viên');
+const errors = ref({});
 const id = router.currentRoute.value.params.id || null;
 const store = useStore();
-
-const errors = ref({});
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({
@@ -85,6 +85,7 @@ const getOne = async () => {
 
 onMounted(() => {
   if (id && id > 0) {
+    pageTitle.value = 'Cập nhập nhóm thành viên.';
     getOne();
   }
 });

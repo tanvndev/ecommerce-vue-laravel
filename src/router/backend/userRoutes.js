@@ -18,6 +18,12 @@ const userRoutes = [
     beforeEnter: [isLoggedIn]
   },
   {
+    path: '/user/update/:id(\\d+)',
+    name: 'user.update',
+    component: UserStoreView,
+    beforeEnter: [isLoggedIn]
+  },
+  {
     path: '/user/catalogue/index',
     name: 'user.catalogue.index',
     component: UserCatalogueIndexView,

@@ -1,9 +1,9 @@
 import axios from '@/configs/axios';
 
-class UserCatalogueService {
+class UserService {
   async getOne(id) {
     try {
-      const response = await axios.get('/users/catalogues/' + id);
+      const response = await axios.get('/users/' + id);
 
       return {
         success: true,
@@ -21,7 +21,7 @@ class UserCatalogueService {
 
   async getAll(payload, ...filers) {
     try {
-      const response = await axios.get('/users/catalogues', {
+      const response = await axios.get('/users', {
         params: { ...payload, ...filers }
       });
 
@@ -40,7 +40,7 @@ class UserCatalogueService {
   }
   async create(payload) {
     try {
-      const response = await axios.post('/users/catalogues', payload);
+      const response = await axios.post('/users', payload);
 
       return {
         success: true,
@@ -57,7 +57,7 @@ class UserCatalogueService {
 
   async update(id, payload) {
     try {
-      const response = await axios.put('/users/catalogues/' + id, payload);
+      const response = await axios.put('/users/' + id, payload);
 
       return {
         success: true,
@@ -73,4 +73,4 @@ class UserCatalogueService {
   }
 }
 
-export default new UserCatalogueService();
+export default new UserService();

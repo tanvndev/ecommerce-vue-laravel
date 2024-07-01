@@ -29,15 +29,14 @@ const props = defineProps({
     type: String,
     required: true
   },
-  modelName: {
+  endpoint: {
     type: String,
     required: true
   }
 });
 
 const handleDelete = async (id) => {
-  let urlConvert = `${props.modelName.replace(/([a-z])([A-Z])/g, '$1/$2').toLowerCase()}`;
-  const url = `/${urlConvert}/${id}`;
+  const url = `/${props.endpoint}/${id}`;
 
   try {
     const response = await axios.delete(url);

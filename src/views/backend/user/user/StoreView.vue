@@ -7,7 +7,7 @@
           <a-row :gutter="16">
             <a-col :span="12">
               <a-card class="mt-3">
-                <AleartError :errors="errors" />
+                <AleartError :errors="error" />
                 <a-row :gutter="[16, 10]">
                   <a-col :span="12">
                     <InputComponent label="Họ tên thành viên" :required="true" name="fullname" />
@@ -40,27 +40,28 @@
                     />
                   </a-col>
                   <a-col :span="12">
-                    <label for="phone" class="mb-2 block text-sm font-medium text-gray-900"
+                    <label for="image" class="mb-2 block text-sm font-medium text-gray-900"
                       >Ảnh đại diện</label
                     >
                     <a-upload
                       v-model:file-list="image"
+                      :before-upload="() => false"
                       list-type="picture"
                       :max-count="1"
-                      action=""
                     >
                       <a-button>
                         <i class="fal fa-upload mr-3"></i>
                         Tải lên ảnh (Tối đa 1)
                       </a-button>
                     </a-upload>
+                    <span class="mt-[6px] block text-[12px] text-red-500">{{ errors.image }}</span>
                   </a-col>
                 </a-row>
               </a-card>
             </a-col>
             <a-col :span="12">
               <a-card class="mt-3">
-                <AleartError :errors="errors" />
+                <AleartError :errors="error" />
                 <a-row :gutter="[16, 15]">
                   <a-col :span="8">
                     <SelectComponent
@@ -68,7 +69,6 @@
                       name="province_id"
                       placeholder="Chọn Tỉnh/Thành phố"
                       :options="provinces"
-                      :required="true"
                       @onChange="getLocation('districts', $event)"
                     />
                   </a-col>
@@ -79,7 +79,6 @@
                       name="district_id"
                       placeholder="Chọn Quận/Huyện"
                       :options="districts"
-                      :required="true"
                       @onChange="getLocation('wards', $event)"
                     />
                   </a-col>
@@ -90,7 +89,6 @@
                       name="ward_id"
                       placeholder="Chọn Phường/Xã"
                       :options="wards"
-                      :required="true"
                     />
                   </a-col>
 
@@ -132,7 +130,7 @@ import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
 
 const pageTitle = ref('Thêm mới thành viên');
-const errors = ref({});
+const error = ref({});
 const userCatalogues = ref([]);
 const id = router.currentRoute.value.params.id || null;
 const endpoint = 'users';
@@ -140,28 +138,45 @@ const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
 const { getProvinces, getLocations, provinces, districts, wards } = useLocation();
 
-const { handleSubmit, setValues, defineField } = useForm({
+const { handleSubmit, setValues, defineField, errors } = useForm({
   validationSchema: yup.object({
-    // name: yup.string().required('Tên nhóm thành viên không được để trống.'),
+    fullname: yup.string().required('Họ tên thành viên không được để trống.'),
+    email: yup.string().email('Email không đúng định dạng.').required('Email không được để trống.'),
+    phone: yup
+      .string()
+      .required('Số điện thoại không được để trống.')
+      .matches(/(0)[0-9]{9}/, 'Số điện thoại không đúng định dạng.'),
+    user_catalogue_id: yup.number().required('Vui lòng chọn nhóm thành viên.'),
+    image: yup
+      .mixed()
+      .nullable()
+      .test('fileType', 'Chỉ chấp nhận định dạng JPG, PNG, WEBP, SVG.', (value) => {
+        if (!value || !value.length) return true;
+        return ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(value[0].type);
+      })
+      .test('fileSize', 'Dung lượng tối đa là 4MB.', (value) => {
+        if (!value || !value.length) return true;
+        return value[0].size <= 4000000; // 4MB in bytes
+      })
   })
 });
 
 const [image] = defineField('image');
 
 const onSubmit = handleSubmit(async (values) => {
+  const payload = values.image ? { ...values, image: values?.image[0].originFileObj } : values;
   let response;
   if (router.currentRoute.value.name.includes('update')) {
-    response = await update(endpoint, id, values);
+    response = await update(endpoint, id, payload);
   } else {
-    response = await create(endpoint, values);
+    response = await create(endpoint, payload);
   }
-  console.log(messages.value);
   if (!response) {
-    return (errors.value = formatMessages(messages.value));
+    return (error.value = formatMessages(messages.value));
   }
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  errors.value = {};
+  error.value = {};
   // router.push({ name: 'user.index' });
 });
 

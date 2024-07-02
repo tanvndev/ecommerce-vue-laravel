@@ -73,7 +73,11 @@ class BaseService {
   }
   async create(endpoint, payload) {
     try {
-      const response = await axios.post(`${endpoint}`, payload);
+      const response = await axios.post(`${endpoint}`, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       return {
         success: true,
@@ -90,7 +94,11 @@ class BaseService {
 
   async update(endpoint, id, payload) {
     try {
-      const response = await axios.put(`${endpoint}/` + id, payload);
+      const response = await axios.put(`${endpoint}/` + id, payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       return {
         success: true,

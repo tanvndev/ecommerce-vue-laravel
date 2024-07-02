@@ -22,7 +22,12 @@
                   </a-col>
 
                   <a-col :span="12">
-                    <InputComponent label="Mật khẩu" :required="true" name="phone" />
+                    <InputComponent
+                      type="password"
+                      label="Mật khẩu"
+                      :required="true"
+                      name="password"
+                    />
                   </a-col>
 
                   <a-col :span="12">
@@ -122,20 +127,20 @@ import { useForm } from 'vee-validate';
 import { formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
 import { formatDataToSelect } from '@/utils/format';
-import { UserService, UserCatalogueService, LocationService, BaseService } from '@/services';
 import * as yup from 'yup';
 import router from '@/router';
+import { useLocation, useCRUD } from '@/composables';
 
 const pageTitle = ref('Thêm mới thành viên');
-const errorsForm = ref({});
+const errors = ref({});
 const userCatalogues = ref([]);
-const provinces = ref([]);
-const districts = ref([]);
-const wards = ref([]);
 const id = router.currentRoute.value.params.id || null;
+const endpoint = 'users';
 const store = useStore();
+const { getOne, getAll, create, update, messages, data } = useCRUD();
+const { getProvinces, getLocations, provinces, districts, wards } = useLocation();
 
-const { handleSubmit, setValues, defineField, errors } = useForm({
+const { handleSubmit, setValues, defineField } = useForm({
   validationSchema: yup.object({
     // name: yup.string().required('Tên nhóm thành viên không được để trống.'),
   })
@@ -144,33 +149,25 @@ const { handleSubmit, setValues, defineField, errors } = useForm({
 const [image] = defineField('image');
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values.image);
-  return;
+  let response;
+  if (router.currentRoute.value.name.includes('update')) {
+    response = await update(endpoint, id, values);
+  } else {
+    response = await create(endpoint, values);
+  }
+  console.log(messages.value);
+  if (!response) {
+    return (errors.value = formatMessages(messages.value));
+  }
 
-  // let response = null;
-  // if (router.currentRoute.value.name.includes('update')) {
-  //   response = await UserService.update(id, values);
-  // } else {
-  //   response = await UserService.create(values);
-  // }
-
-  // if (!response.success) {
-  //   return (errorsForm.value = formatMessages(response.messages));
-  // }
-  // store.dispatch('antStore/showMessage', { type: 'success', message: response.messages });
-  // errorsForm.value = {};
-  // router.push({ name: 'user.catalogue.index' });
+  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  errors.value = {};
+  // router.push({ name: 'user.index' });
 });
 
 const getCatalogues = async () => {
-  const response = await UserCatalogueService.getAll();
-  const data = formatDataToSelect(response.data);
-  userCatalogues.value = data;
-};
-
-const getProvinces = async () => {
-  const response = await LocationService.getProvinces();
-  provinces.value = formatDataToSelect(response.data, 'code', 'name');
+  await getAll('users/catalogues');
+  userCatalogues.value = formatDataToSelect(data.value);
 };
 
 const getLocation = async (target, location_id) => {
@@ -183,29 +180,31 @@ const getLocation = async (target, location_id) => {
   if (!location_id || !target) {
     return false;
   }
-
-  const response = await LocationService.getLocations({ target, location_id });
-  const responseFormat = formatDataToSelect(response.data[target], 'code', 'name');
-
-  if (target === 'districts') {
-    districts.value = responseFormat;
-  } else if (target === 'wards') {
-    wards.value = responseFormat;
-  }
+  await getLocations(target, location_id);
 };
 
-const getOne = async () => {
-  const response = await UserService.getOne(id);
-  setValues({ name: response.data?.name, description: response.data?.description });
+const fetchOne = async () => {
+  await getOne(endpoint, 1);
+  setValues({
+    fullname: data.value?.fullname,
+    email: data.value?.email + '.vn',
+    user_catalogue_id: data.value?.user_catalogue_id,
+    phone: '0332225691',
+    password: '0332225691',
+    address: data.value?.address,
+    province_id: data.value?.province_id,
+    district_id: data.value?.district_id,
+    ward_id: data.value?.ward_id
+  });
 };
 
 onMounted(() => {
   getCatalogues();
   getProvinces();
 
+  fetchOne();
   if (id && id > 0) {
     pageTitle.value = 'Cập nhập thành viên.';
-    getOne();
   }
 });
 </script>

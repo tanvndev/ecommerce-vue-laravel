@@ -5,6 +5,7 @@ export default function useCRUD() {
   const loading = ref(false);
   const error = ref(null);
   const messages = ref(null);
+  const data = ref(null);
 
   const getAll = async (endpoint, payload = {}) => {
     loading.value = true;
@@ -12,6 +13,7 @@ export default function useCRUD() {
     try {
       const response = await BaseService.getAll(endpoint, payload);
       if (response.success) {
+        data.value = response.data;
         return response.data;
       }
     } catch (err) {
@@ -27,6 +29,7 @@ export default function useCRUD() {
     try {
       const response = await BaseService.getOne(endpoint, id);
       if (response.success) {
+        data.value = response.data;
         return response.data;
       }
     } catch (err) {
@@ -61,5 +64,5 @@ export default function useCRUD() {
       loading.value = false;
     }
   };
-  return { getAll, getOne, create, update, loading, error, messages };
+  return { getAll, getOne, create, update, loading, error, messages, data };
 }

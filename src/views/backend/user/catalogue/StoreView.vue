@@ -48,7 +48,7 @@ const errors = ref({});
 const id = router.currentRoute.value.params.id || null;
 const store = useStore();
 const endpoint = 'users/catalogues';
-const { getOne, create, update, messages } = useCRUD();
+const { getOne, create, update, messages, data } = useCRUD();
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({
@@ -74,8 +74,8 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 const fetchOne = async () => {
-  const response = await getOne(endpoint, id);
-  setValues({ name: response.name, description: response.description });
+  await getOne(endpoint, id);
+  setValues({ name: data.value.name, description: data.value.description });
 };
 
 onMounted(() => {

@@ -64,7 +64,7 @@ class BaseService {
         data: response.data
       };
     } catch (error) {
-      let messages = error.response ? error.response.messages : 'Unexpected error occurred';
+      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
       return {
         success: false,
         messages: messages
@@ -113,7 +113,7 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.messages : 'Unexpected error occurred';
+      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
       return {
         success: false,
         messages: messages
@@ -129,7 +129,7 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.messages : 'Unexpected error occurred';
+      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
       return {
         success: false,
         messages: messages

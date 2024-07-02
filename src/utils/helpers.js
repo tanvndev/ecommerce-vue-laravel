@@ -8,4 +8,22 @@ const debounce = (func, delay) => {
   };
 };
 
-export { debounce };
+const resizeImage = (image, width, height) => {
+  const params = [];
+
+  if (width) {
+    params.push(`w=${width}`);
+  }
+  if (height) {
+    params.push(`h=${height}`);
+  }
+
+  if (params.length > 0) {
+    const separator = image.includes('?') ? '&' : '?';
+    image += separator + params.join('&');
+  }
+
+  return image;
+};
+
+export { debounce, resizeImage };

@@ -123,9 +123,9 @@ import {
 } from '@/components/backend';
 import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
-import { formatMessages } from '@/utils/format';
+import { resizeImage } from '@/utils/helpers';
 import { useStore } from 'vuex';
-import { formatDataToSelect } from '@/utils/format';
+import { formatDataToSelect, formatMessages } from '@/utils/format';
 import * as yup from 'yup';
 import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
@@ -224,7 +224,7 @@ const fetchOne = async () => {
         uid: '1',
         name: data.value?.fullname,
         status: 'done',
-        url: data.value?.image
+        url: resizeImage(data.value?.image, 100, 100)
       }
     ]
   });

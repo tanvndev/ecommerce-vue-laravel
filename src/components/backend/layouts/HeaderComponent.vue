@@ -107,7 +107,7 @@
               >
                 <img
                   class="h-full w-full rounded-full object-cover"
-                  :src="user.image || 'https://i.ibb.co/WpM5yZZ/9.png'"
+                  :src="resizeImage(user.image, 100, 100) || 'https://i.ibb.co/WpM5yZZ/9.png'"
                   loading="lazy"
                 />
 
@@ -147,6 +147,7 @@
 import { useStore } from 'vuex';
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import { resizeImage } from '@/utils/helpers';
 
 const store = useStore();
 const user = computed(() => store.getters['authStore/getUser']);

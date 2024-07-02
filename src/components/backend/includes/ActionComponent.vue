@@ -18,8 +18,8 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue';
-import axios from '@/configs/axios';
 import { useStore } from 'vuex';
+import { BaseService } from '@/services';
 
 const store = useStore();
 const emits = defineEmits(['onDelete']);
@@ -36,20 +36,10 @@ const props = defineProps({
 });
 
 const handleDelete = async (id) => {
-  const url = `/${props.endpoint}/${id}`;
+  const response = await BaseService.deleteOne(props.endpoint, id);
 
-  try {
-    const response = await axios.delete(url);
-    const type = response.status == 'success' ? 'success' : 'error';
-
-    store.dispatch('antStore/showMessage', { type, message: response.messages });
-    emits('onDelete', id);
-  } catch (error) {
-    let messages = error.response ? error.response.messages : 'Unexpected error occurred';
-    return {
-      success: false,
-      messages: messages
-    };
-  }
+  const type = response.success ? 'success' : 'error';
+  store.dispatch('antStore/showMessage', { type, message: response.messages });
+  emits('onDelete', id);
 };
 </script>

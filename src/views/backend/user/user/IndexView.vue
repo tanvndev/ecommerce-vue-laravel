@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import {
   BreadcrumbComponent,
   MasterLayout,
@@ -65,35 +65,14 @@ import {
   ToolboxComponent,
   ActionComponent
 } from '@/components/backend';
-import UserService from '@/services/users/UserService';
-import { PAGESIZE } from '@/lang/vn/constants';
+import { useCRUD, usePagination } from '@/composables';
 
 // Data static
-const pageTitle = 'Danh thành viên';
+const pageTitle = 'Danh sách thành viên';
 const modelName = 'User';
 const routeCreate = 'user.store';
 const routeUpdate = 'user.update';
 const endpoint = 'users';
-
-// Data
-const filterOptions = ref({});
-const dataSource = ref([]);
-const loading = ref(false);
-const isShowToolbox = ref(false);
-const modelIds = ref([]);
-
-// Pagination
-const pagination = ref({
-  current: 1,
-  pageSize: 10,
-  total: 0,
-  showSizeChanger: true,
-  showQuickJumper: true,
-  hideOnSinglePage: true,
-  pageSizeOptions: PAGESIZE
-});
-
-// Columns configuration
 const columns = [
   {
     title: 'Tên thành viên',
@@ -133,41 +112,52 @@ const columns = [
   }
 ];
 
+// Data
+const filterOptions = ref({});
+const dataSource = ref([]);
+const isShowToolbox = ref(false);
+const modelIds = ref([]);
+
+// Fetch
+const { getAll, loading } = useCRUD();
+// Pagination
+const {
+  pagination,
+  rowSelection,
+  handleTableChange,
+  onChangePagination,
+  selectedRowKeys,
+  selectedRows
+} = usePagination();
+
 // Methods
-const fetchUserData = async () => {
-  loading.value = true;
-  try {
-    const response = await UserService.getAll({
-      page: pagination.value.current,
-      pageSize: pagination.value.pageSize,
-      ...filterOptions.value
-    });
-    if (response.success) {
-      dataSource.value = response.data.data;
-      pagination.value.current = response.data.current_page;
-      pagination.value.total = response.data.total;
-      pagination.value.pageSize = response.data.per_page;
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  } finally {
-    loading.value = false;
-  }
+const fetchData = async () => {
+  const payload = {
+    page: pagination.current,
+    pageSize: pagination.pageSize,
+    ...filterOptions.value
+  };
+  const response = await getAll(endpoint, payload);
+  dataSource.value = response.data;
+  pagination.current = response.current_page;
+  pagination.total = response.total;
+  pagination.pageSize = response.per_page;
 };
 
-const handleTableChange = async (paginationTable, filters, sorter) => {
-  pagination.value.current = paginationTable.current || 1;
-  pagination.value.pageSize = paginationTable.pageSize || 10;
-  fetchUserData();
-};
+// Watchers
+watch(onChangePagination, () => fetchData());
+watch(selectedRows, () => {
+  isShowToolbox.value = selectedRows.value.length > 0;
+  modelIds.value = selectedRowKeys.value;
+});
 
 const onFilterOptions = (filterValue) => {
   filterOptions.value = filterValue;
-  fetchUserData();
+  fetchData();
 };
 
 const onChangeToolbox = () => {
-  fetchUserData();
+  fetchData();
 };
 
 const onDelete = (key) => {
@@ -175,14 +165,5 @@ const onDelete = (key) => {
 };
 
 // Lifecycle hook
-onMounted(fetchUserData);
-
-// Row selection
-const rowSelection = ref({
-  checkStrictly: false,
-  onChange: (selectedRowKeys, selectedRows) => {
-    modelIds.value = selectedRowKeys;
-    isShowToolbox.value = selectedRows.length > 0;
-  }
-});
+onMounted(fetchData);
 </script>

@@ -19,22 +19,10 @@
           <form class="space-y-4 md:space-y-6" @submit.prevent="onSubmit">
             <AleartError :errors="errors" />
             <div>
-              <label for="email" class="mb-2 block text-sm font-medium text-gray-900">Email</label>
-              <InputComponent
-                name="email"
-                type="text"
-                class-name="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600"
-              />
+              <InputComponent label="Địa chỉ email" name="email" type="text" />
             </div>
             <div>
-              <label for="password" class="mb-2 block text-sm font-medium text-gray-900"
-                >Mật khẩu</label
-              >
-              <InputComponent
-                name="password"
-                type="password"
-                class-name="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600"
-              />
+              <InputComponent label="Mật khẩu" name="password" type="password" />
             </div>
             <div class="flex items-center justify-between">
               <div class="flex items-start">

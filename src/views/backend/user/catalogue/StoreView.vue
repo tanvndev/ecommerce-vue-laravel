@@ -8,16 +8,10 @@
             <AleartError :errors="errors" />
             <a-row :gutter="16">
               <a-col :span="12">
-                <label for="name" class="mb-2 block text-sm font-medium text-gray-900"
-                  >Tên nhóm thành viên</label
-                >
-                <InputComponent name="name" />
+                <InputComponent name="name" label="Tên nhóm thành viên" :required="true" />
               </a-col>
               <a-col :span="12">
-                <label for="description" class="mb-2 block text-sm font-medium text-gray-900"
-                  >Mô tả nhóm thành viên</label
-                >
-                <InputComponent name="description" />
+                <InputComponent name="description" label="Mô tả thành viên" :required="true" />
               </a-col>
             </a-row>
           </a-card>
@@ -47,12 +41,14 @@ import { formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
-import UserService from '@/services/users/UserCatalogueService';
+import { useCRUD } from '@/composables';
 
 const pageTitle = ref('Thêm mới nhóm thành viên');
 const errors = ref({});
 const id = router.currentRoute.value.params.id || null;
 const store = useStore();
+const endpoint = 'users/catalogues';
+const { getOne, create, update, messages } = useCRUD();
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({
@@ -62,31 +58,30 @@ const { handleSubmit, setValues } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  let response = null;
+  let response;
   if (router.currentRoute.value.name.includes('update')) {
-    response = await UserService.update(id, values);
+    response = await update(endpoint, id, values);
   } else {
-    response = await UserService.create(values);
+    response = await create(endpoint, values);
+  }
+  if (!response) {
+    return (errors.value = formatMessages(messages.value));
   }
 
-  if (!response.success) {
-    return (errors.value = formatMessages(response.messages));
-  }
-
-  store.dispatch('antStore/showMessage', { type: 'success', message: response.messages });
+  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
   errors.value = {};
   router.push({ name: 'user.catalogue.index' });
 });
 
-const getOne = async () => {
-  const response = await UserService.getOne(id);
-  setValues({ name: response.data?.name, description: response.data?.description });
+const fetchOne = async () => {
+  const response = await getOne(endpoint, id);
+  setValues({ name: response.name, description: response.description });
 };
 
 onMounted(() => {
   if (id && id > 0) {
     pageTitle.value = 'Cập nhập nhóm thành viên.';
-    getOne();
+    fetchOne();
   }
 });
 </script>

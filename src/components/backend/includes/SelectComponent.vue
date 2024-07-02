@@ -4,24 +4,29 @@
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
   >
   <div>
-    <a-input
-      v-model:value="value"
-      :class="className"
+    <a-select
       :id="props.name"
-      :type="props.type"
-      :placeholder="props.placeholder"
-      :status="errorMessage ? 'error' : ''"
       :size="props.size"
+      :show-search="props.showSearch"
+      v-model:value="value"
       :allowClear="true"
-    />
-
+      :autoClearSearchValue="true"
+      :options="props.options"
+      :filterOption="filterOption"
+      :placeholder="props.placeholder"
+      :class="props.className"
+      @change="handleChange"
+    >
+    </a-select>
     <span class="mt-[6px] block text-[12px] text-red-500">{{ errorMessage }}</span>
   </div>
 </template>
 
 <script setup>
+import { defineProps, defineEmits, defineExpose } from 'vue';
 import { useField } from 'vee-validate';
 
+const emits = defineEmits(['onChange']);
 const props = defineProps({
   required: {
     type: [Boolean, String],
@@ -41,11 +46,7 @@ const props = defineProps({
   },
   className: {
     type: String,
-    default: ''
-  },
-  type: {
-    type: String,
-    default: 'text'
+    default: 'w-full'
   },
   placeholder: {
     type: String,
@@ -54,7 +55,29 @@ const props = defineProps({
   size: {
     type: String,
     default: 'large'
+  },
+  options: {
+    type: [Array, Object],
+    default: () => []
+  },
+  showSearch: {
+    type: [Boolean, String],
+    default: true
   }
+});
+
+const filterOption = (input, option) => {
+  return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+const handleChange = (value) => {
+  emits('onChange', value);
+};
+const clearSelected = () => {
+  value.value = null;
+};
+
+defineExpose({
+  clearSelected
 });
 
 // Tạo field với VeeValidate

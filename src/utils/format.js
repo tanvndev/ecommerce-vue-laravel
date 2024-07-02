@@ -6,4 +6,12 @@ const formatMessages = (messages) => {
   return formattedMessages;
 };
 
-export { formatMessages };
+const formatDataToSelect = (data, value = 'id', label = 'name') => {
+  const formattedData = [];
+  data.forEach((item) => {
+    formattedData.push({ label: item[label], value: item[value] });
+  });
+  return formattedData;
+};
+
+export { formatMessages, formatDataToSelect };

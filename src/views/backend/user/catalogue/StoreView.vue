@@ -35,7 +35,7 @@ import {
   AleartError,
   InputComponent
 } from '@/components/backend';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
@@ -45,10 +45,10 @@ import { useCRUD } from '@/composables';
 
 const pageTitle = ref('Thêm mới nhóm thành viên');
 const errors = ref({});
-const id = router.currentRoute.value.params.id || null;
 const store = useStore();
 const endpoint = 'users/catalogues';
 const { getOne, create, update, messages, data } = useCRUD();
+const id = computed(() => router.currentRoute.value.params.id || null);
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({
@@ -58,12 +58,10 @@ const { handleSubmit, setValues } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  let response;
-  if (router.currentRoute.value.name.includes('update')) {
-    response = await update(endpoint, id, values);
-  } else {
-    response = await create(endpoint, values);
-  }
+  const response =
+    id.value && id.value > 0
+      ? await update(endpoint, id.value, values)
+      : await create(endpoint, values);
   if (!response) {
     return (errors.value = formatMessages(messages.value));
   }
@@ -74,12 +72,12 @@ const onSubmit = handleSubmit(async (values) => {
 });
 
 const fetchOne = async () => {
-  await getOne(endpoint, id);
+  await getOne(endpoint, id.value);
   setValues({ name: data.value.name, description: data.value.description });
 };
 
 onMounted(() => {
-  if (id && id > 0) {
+  if (id.value && id.value > 0) {
     pageTitle.value = 'Cập nhập nhóm thành viên.';
     fetchOne();
   }

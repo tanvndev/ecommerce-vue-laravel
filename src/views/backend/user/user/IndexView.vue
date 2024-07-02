@@ -130,7 +130,7 @@ const {
   selectedRows
 } = usePagination();
 
-// Methods
+// Fetchdata
 const fetchData = async () => {
   const payload = {
     page: pagination.current,

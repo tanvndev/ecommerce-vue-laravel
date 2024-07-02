@@ -21,7 +21,7 @@
                     <InputComponent label="Số điện thoại" :required="true" name="phone" />
                   </a-col>
 
-                  <a-col :span="12">
+                  <a-col :span="12" v-if="!id">
                     <InputComponent
                       type="password"
                       label="Mật khẩu"
@@ -39,7 +39,7 @@
                       :required="true"
                     />
                   </a-col>
-                  <a-col :span="12">
+                  <a-col :span="!id ? 12 : 24">
                     <label for="image" class="mb-2 block text-sm font-medium text-gray-900"
                       >Ảnh đại diện</label
                     >
@@ -54,6 +54,7 @@
                         Tải lên ảnh (Tối đa 1)
                       </a-button>
                     </a-upload>
+
                     <span class="mt-[6px] block text-[12px] text-red-500">{{ errors.image }}</span>
                   </a-col>
                 </a-row>
@@ -120,7 +121,7 @@ import {
   InputComponent,
   SelectComponent
 } from '@/components/backend';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
@@ -132,13 +133,14 @@ import { useLocation, useCRUD } from '@/composables';
 const pageTitle = ref('Thêm mới thành viên');
 const error = ref({});
 const userCatalogues = ref([]);
-const id = router.currentRoute.value.params.id || null;
 const endpoint = 'users';
 const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
 const { getProvinces, getLocations, provinces, districts, wards } = useLocation();
 
-const { handleSubmit, setValues, defineField, errors } = useForm({
+const id = computed(() => router.currentRoute.value.params.id || null);
+
+const { handleSubmit, setValues, defineField, errors, setFieldValue } = useForm({
   validationSchema: yup.object({
     fullname: yup.string().required('Họ tên thành viên không được để trống.'),
     email: yup.string().email('Email không đúng định dạng.').required('Email không được để trống.'),
@@ -147,37 +149,46 @@ const { handleSubmit, setValues, defineField, errors } = useForm({
       .required('Số điện thoại không được để trống.')
       .matches(/(0)[0-9]{9}/, 'Số điện thoại không đúng định dạng.'),
     user_catalogue_id: yup.number().required('Vui lòng chọn nhóm thành viên.'),
-    image: yup
-      .mixed()
-      .nullable()
-      .test('fileType', 'Chỉ chấp nhận định dạng JPG, PNG, WEBP, SVG.', (value) => {
-        if (!value || !value.length) return true;
-        return ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(value[0].type);
-      })
-      .test('fileSize', 'Dung lượng tối đa là 4MB.', (value) => {
-        if (!value || !value.length) return true;
-        return value[0].size <= 4000000; // 4MB in bytes
-      })
+    password: id.value
+      ? yup.string().nullable()
+      : yup
+          .string()
+          .required('Mật khẩu bắt buộc phải nhập.')
+          .min('6', 'Mật khẩu tối thiểu 6 kí tự.'),
+    image: id.value
+      ? null
+      : yup
+          .mixed()
+          .nullable()
+          .test('fileType', 'Chỉ chấp nhận định dạng JPG, PNG, WEBP, SVG.', (value) => {
+            if (!value || !value.length) return true;
+            return ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(
+              value[0].type
+            );
+          })
+          .test('fileSize', 'Dung lượng tối đa là 4MB.', (value) => {
+            if (!value || !value.length) return true;
+            return value[0].size <= 4000000; // 4MB in bytes
+          })
   })
 });
-
 const [image] = defineField('image');
 
 const onSubmit = handleSubmit(async (values) => {
   const payload = values.image ? { ...values, image: values?.image[0].originFileObj } : values;
-  let response;
-  if (router.currentRoute.value.name.includes('update')) {
-    response = await update(endpoint, id, payload);
-  } else {
-    response = await create(endpoint, payload);
-  }
+
+  const response =
+    id.value && id.value > 0
+      ? await update(endpoint, id.value, payload)
+      : await create(endpoint, payload);
+
   if (!response) {
     return (error.value = formatMessages(messages.value));
   }
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
   error.value = {};
-  // router.push({ name: 'user.index' });
+  router.push({ name: 'user.index' });
 });
 
 const getCatalogues = async () => {
@@ -187,38 +198,43 @@ const getCatalogues = async () => {
 
 const getLocation = async (target, location_id) => {
   if (target === 'districts') {
-    setValues({ district_id: null, ward_id: null });
+    setFieldValue('district_id', null);
+    setFieldValue('ward_id', null);
   } else if (target === 'wards') {
-    setValues({ ward_id: null });
+    setFieldValue('ward_id', null);
   }
-
-  if (!location_id || !target) {
-    return false;
+  if (location_id && target) {
+    await getLocations(target, location_id);
   }
-  await getLocations(target, location_id);
 };
 
 const fetchOne = async () => {
-  await getOne(endpoint, 1);
+  await getOne(endpoint, id.value);
   setValues({
     fullname: data.value?.fullname,
-    email: data.value?.email + '.vn',
+    email: data.value?.email,
     user_catalogue_id: data.value?.user_catalogue_id,
-    phone: '0332225691',
-    password: '0332225691',
+    phone: data.value?.phone,
     address: data.value?.address,
     province_id: data.value?.province_id,
     district_id: data.value?.district_id,
-    ward_id: data.value?.ward_id
+    ward_id: data.value?.ward_id,
+    image: [
+      {
+        uid: '1',
+        name: data.value?.fullname,
+        status: 'done',
+        url: data.value?.image
+      }
+    ]
   });
 };
 
 onMounted(() => {
   getCatalogues();
   getProvinces();
-
-  fetchOne();
-  if (id && id > 0) {
+  if (id.value) {
+    fetchOne();
     pageTitle.value = 'Cập nhập thành viên.';
   }
 });

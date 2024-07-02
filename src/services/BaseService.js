@@ -94,7 +94,7 @@ class BaseService {
 
   async update(endpoint, id, payload) {
     try {
-      const response = await axios.put(`${endpoint}/` + id, payload, {
+      const response = await axios.post(`${endpoint}/${id}?_method=PUT`, payload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -114,7 +114,7 @@ class BaseService {
   }
   async deleteOne(endpoint, id) {
     try {
-      const response = await axios.delete(`${endpoint}/` + id);
+      const response = await axios.delete(`${endpoint}/${id}`);
 
       return {
         success: true,

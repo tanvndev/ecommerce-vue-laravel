@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, defineExpose } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import { useField } from 'vee-validate';
 
 const emits = defineEmits(['onChange']);
@@ -72,13 +72,6 @@ const filterOption = (input, option) => {
 const handleChange = (value) => {
   emits('onChange', value);
 };
-const clearSelected = () => {
-  value.value = null;
-};
-
-defineExpose({
-  clearSelected
-});
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);

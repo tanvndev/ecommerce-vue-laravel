@@ -15,8 +15,8 @@ import { SidebarComponent, HeaderComponent } from '@/components/backend';
 import { useStore } from 'vuex';
 import { useAntToast } from '@/utils/antToast';
 import { computed, watchEffect } from 'vue';
-const { showMessage } = useAntToast();
 
+const { showMessage } = useAntToast();
 const store = useStore();
 const isShowToast = computed(() => store.getters['antStore/getIsShow']);
 

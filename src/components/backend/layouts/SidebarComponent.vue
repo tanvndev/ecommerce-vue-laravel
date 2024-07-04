@@ -23,7 +23,7 @@
           <button
             type="button"
             class="block text-sm"
-            @click="isOpen = !isOpen"
+            @click="toggerDropdown(item.id)"
             v-if="item.subMenu.length > 0"
           >
             <div
@@ -38,7 +38,7 @@
               <i
                 :class="[
                   'ml-6 text-[10px]',
-                  isOpen ? 'far fa-chevron-down' : 'far fa-chevron-right'
+                  openDropdowns[item.id] ? 'far fa-chevron-down' : 'far fa-chevron-right'
                 ]"
               ></i>
             </div>
@@ -60,7 +60,7 @@
 
           <ul
             class="bg-gray-00 mt-2 overflow-hidden rounded-md p-2 text-sm font-medium transition-all duration-150 dark:bg-gray-900"
-            v-if="item.subMenu.length > 0 && isOpen"
+            v-if="item.subMenu.length > 0 && openDropdowns[item.id]"
           >
             <li class="mb-1" v-for="itemSub in item.subMenu" :key="itemSub.route">
               <RouterLink
@@ -97,9 +97,13 @@ import { RouterLink, useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 
 const sidebarData = ref(null);
-const isOpen = ref(false);
+const openDropdowns = ref({});
 const route = useRoute();
 const store = useStore();
+
+const toggerDropdown = (itemId) => {
+  openDropdowns.value[itemId] = !openDropdowns.value[itemId];
+};
 const isActive = (item) => {
   return route.name == item.route || item.subMenu.some((sub) => route.name === sub.route);
 };

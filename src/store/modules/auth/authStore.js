@@ -1,3 +1,4 @@
+import router from '@/router';
 import AuthService from '@/services/AuthService';
 import Cookies from 'js-cookie';
 
@@ -64,6 +65,7 @@ const mutations = {
     state.status.loggedIn = false;
     state.user = null;
     state.messages = '';
+    router.push('/login');
   }
 };
 

@@ -9,6 +9,7 @@ const debounce = (func, delay) => {
 };
 
 const resizeImage = (image, width, height) => {
+  image = JSON.parse(image)[0];
   const params = [];
 
   if (width) {

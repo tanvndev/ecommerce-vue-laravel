@@ -117,22 +117,20 @@
             <template #overlay>
               <a-menu>
                 <a-menu-item>
-                  <RouterLink :to="{ name: dashboard }">
+                  <RouterLink :to="{ name: 'dashboard' }">
                     <i class="far fa-home mr-2"></i>
                     <span>Dashboard</span>
                   </RouterLink>
                 </a-menu-item>
                 <a-menu-item>
-                  <RouterLink>
+                  <RouterLink :to="{ name: 'user.update', params: { id: user.id } }">
                     <i class="far fa-cog mr-2"></i>
                     <span>Chỉnh sửa hồ sơ</span>
                   </RouterLink>
                 </a-menu-item>
-                <a-menu-item>
-                  <RouterLink>
-                    <i class="far fa-sign-out mr-2"></i>
-                    <span>Đăng xuất</span>
-                  </RouterLink>
+                <a-menu-item @click="store.dispatch('authStore/logout')">
+                  <i class="far fa-sign-out mr-2"></i>
+                  <span>Đăng xuất</span>
                 </a-menu-item>
               </a-menu>
             </template>

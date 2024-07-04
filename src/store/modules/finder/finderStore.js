@@ -1,38 +1,25 @@
 // state
 const state = {
-  isShow: false,
-  type: '',
-  message: ''
+  fileSeleted: null,
+  fileListOld: null
 };
 
 // getters
 const getters = {
-  getIsShow: (state) => state.isShow,
-  getType: (state) => state.type,
-  getMessage: (state) => state.message
+  getFileSelected: (state) => state.fileSeleted
 };
 // actions
 const actions = {
-  showMessage({ commit }, { type, message }) {
-    commit('setMessage', { type, message });
-  },
-  removeMessage({ commit }) {
-    commit('removeMessage');
+  setFileSelected({ commit }, { files }) {
+    commit('setFileSelected', { files });
   }
 };
 
 // mutations
 
 const mutations = {
-  setMessage(state, { type, message }) {
-    state.isShow = true;
-    state.type = type;
-    state.message = message;
-  },
-  removeMessage(state) {
-    state.isShow = false;
-    state.type = '';
-    state.message = '';
+  setFileSelected(state, { files }) {
+    state.fileSeleted = files;
   }
 };
 

@@ -43,19 +43,13 @@
                     <label for="image" class="mb-2 block text-sm font-medium text-gray-900"
                       >Ảnh đại diện</label
                     >
-                    <a-upload
-                      v-model:file-list="image"
-                      :before-upload="() => false"
-                      list-type="picture"
-                      :max-count="1"
-                    >
-                      <a-button>
-                        <i class="fal fa-upload mr-3"></i>
-                        Tải lên ảnh (Tối đa 1)
-                      </a-button>
-                    </a-upload>
-
-                    <span class="mt-[6px] block text-[12px] text-red-500">{{ errors.image }}</span>
+                    <InputFinderComponent
+                      v-if="id && data"
+                      :multipleFile="false"
+                      @onFiles="onFiles"
+                      :fileListOld="data?.image"
+                    />
+                    <InputFinderComponent v-else :multipleFile="false" @onFiles="onFiles" />
                   </a-col>
                 </a-row>
               </a-card>
@@ -123,12 +117,13 @@ import {
 } from '@/components/backend';
 import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
-import { resizeImage } from '@/utils/helpers';
+import { getFileFromFileList } from '@/utils/helpers';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatMessages } from '@/utils/format';
 import * as yup from 'yup';
 import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
+import InputFinderComponent from '@/components/backend/includes/InputFinderComponent.vue';
 
 const pageTitle = ref('Thêm mới thành viên');
 const error = ref({});
@@ -140,7 +135,7 @@ const { getProvinces, getLocations, provinces, districts, wards } = useLocation(
 
 const id = computed(() => router.currentRoute.value.params.id || null);
 
-const { handleSubmit, setValues, defineField, errors, setFieldValue } = useForm({
+const { handleSubmit, setValues, setFieldValue } = useForm({
   validationSchema: yup.object({
     fullname: yup.string().required('Họ tên thành viên không được để trống.'),
     email: yup.string().email('Email không đúng định dạng.').required('Email không được để trống.'),
@@ -154,42 +149,29 @@ const { handleSubmit, setValues, defineField, errors, setFieldValue } = useForm(
       : yup
           .string()
           .required('Mật khẩu bắt buộc phải nhập.')
-          .min('6', 'Mật khẩu tối thiểu 6 kí tự.'),
-    image: id.value
-      ? null
-      : yup
-          .mixed()
-          .nullable()
-          .test('fileType', 'Chỉ chấp nhận định dạng JPG, PNG, WEBP, SVG.', (value) => {
-            if (!value || !value.length) return true;
-            return ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'].includes(
-              value[0].type
-            );
-          })
-          .test('fileSize', 'Dung lượng tối đa là 4MB.', (value) => {
-            if (!value || !value.length) return true;
-            return value[0].size <= 4000000; // 4MB in bytes
-          })
+          .min('6', 'Mật khẩu tối thiểu 6 kí tự.')
   })
 });
-const [image] = defineField('image');
 
 const onSubmit = handleSubmit(async (values) => {
-  const payload = values.image ? { ...values, image: values?.image[0].originFileObj } : values;
-
+  console.log(values);
   const response =
     id.value && id.value > 0
-      ? await update(endpoint, id.value, payload)
-      : await create(endpoint, payload);
-
+      ? await update(endpoint, id.value, values)
+      : await create(endpoint, values);
   if (!response) {
     return (error.value = formatMessages(messages.value));
   }
-
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
   error.value = {};
   router.push({ name: 'user.index' });
 });
+
+const onFiles = (files) => {
+  if (files && files.length > 0) {
+    setFieldValue('image', getFileFromFileList(files));
+  }
+};
 
 const getCatalogues = async () => {
   await getAll('users/catalogues');
@@ -219,23 +201,16 @@ const fetchOne = async () => {
     province_id: data.value?.province_id,
     district_id: data.value?.district_id,
     ward_id: data.value?.ward_id,
-    image: [
-      {
-        uid: '1',
-        name: data.value?.fullname,
-        status: 'done',
-        url: resizeImage(data.value?.image, 100, 100)
-      }
-    ]
+    image: data.value?.image
   });
 };
 
-onMounted(() => {
-  getCatalogues();
-  getProvinces();
+onMounted(async () => {
   if (id.value) {
     fetchOne();
     pageTitle.value = 'Cập nhập thành viên.';
   }
+  getCatalogues();
+  getProvinces();
 });
 </script>

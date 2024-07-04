@@ -95,8 +95,7 @@ const columns = [
   {
     title: 'Địa chỉ',
     dataIndex: 'address',
-    key: 'address',
-    sorter: (a, b) => a.address.localeCompare(b.address)
+    key: 'address'
   },
   {
     title: 'Tình trạng',

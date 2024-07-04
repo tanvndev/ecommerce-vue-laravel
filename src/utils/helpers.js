@@ -39,4 +39,28 @@ const getFileNameFromUrl = (url) => {
   const parts = url.split('/');
   return parts[parts.length - 1];
 };
-export { debounce, resizeImage, getBase64, getFileNameFromUrl };
+
+const getFileFromFileList = (fileList) => {
+  if (!fileList || fileList.length === 0) {
+    return [];
+  }
+  const fileArr = fileList.map((file) => file.url);
+  return JSON.stringify(fileArr);
+};
+
+const getImageToAnt = (images) => {
+  const data = [];
+  images.forEach((image) => {
+    const fileName = getFileNameFromUrl(image);
+    data.push({
+      uid: fileName,
+      name: fileName,
+      status: 'done',
+      url: image
+    });
+  });
+
+  return data;
+};
+
+export { debounce, resizeImage, getBase64, getFileNameFromUrl, getFileFromFileList, getImageToAnt };

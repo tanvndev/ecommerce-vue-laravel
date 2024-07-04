@@ -27,9 +27,9 @@
   />
 </template>
 <script setup>
-import { defineProps, defineEmits, ref, watch, computed } from 'vue';
+import { defineProps, defineEmits, ref, watch, computed, onMounted } from 'vue';
 import { FileManager } from '@/components/backend';
-import { getBase64, getFileNameFromUrl } from '@/utils/helpers';
+import { getBase64, getFileNameFromUrl, getImageToAnt } from '@/utils/helpers';
 
 const isVisibleFileManager = ref(false);
 const previewVisible = ref(false);
@@ -42,6 +42,21 @@ const props = defineProps({
   multipleFile: {
     type: [Boolean, String],
     default: false
+  },
+  fileListOld: {
+    type: [Array, String, Object],
+    default: null
+  }
+});
+
+onMounted(() => {
+  if (props.fileListOld) {
+    try {
+      const files = getImageToAnt(JSON.parse(props.fileListOld));
+      fileList.value = files;
+    } catch (error) {
+      console.error('Error parsing fileListOld:', error);
+    }
   }
 });
 

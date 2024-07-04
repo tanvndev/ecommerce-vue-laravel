@@ -10,6 +10,6 @@
 <script setup>
 import { defineProps } from 'vue';
 const props = defineProps({
-  errors: Object
+  errors: { Object }
 });
 </script>

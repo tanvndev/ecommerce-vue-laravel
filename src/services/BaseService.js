@@ -80,6 +80,7 @@ class BaseService {
       });
 
       return {
+        data: response.data ?? [],
         success: true,
         messages: response.messages
       };
@@ -112,11 +113,14 @@ class BaseService {
       };
     }
   }
-  async deleteOne(endpoint, id) {
+  async deleteOne(endpoint, id, payload = null) {
     try {
-      const response = await axios.delete(`${endpoint}/${id}`);
+      const response = await axios.delete(`${endpoint}/${id}`, {
+        params: payload
+      });
 
       return {
+        data: response.data ?? [],
         success: true,
         messages: response.messages
       };

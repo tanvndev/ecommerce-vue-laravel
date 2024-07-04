@@ -6,6 +6,7 @@ export { default as PublishSwitchComponent } from './includes/PublishSwitchCompo
 export { default as ToolboxComponent } from './includes/ToolboxComponent.vue';
 export { default as ActionComponent } from './includes/ActionComponent.vue';
 export { default as SelectComponent } from './includes/SelectComponent.vue';
+export { default as InputFinderComponent } from './includes/InputFinderComponent.vue';
 
 export { default as HeaderComponent } from './layouts/HeaderComponent.vue';
 export { default as MasterLayout } from './layouts/MasterLayout.vue';

@@ -13,6 +13,7 @@ export default function useCRUD() {
     try {
       const response = await BaseService.getAll(endpoint, payload);
       if (response.success) {
+        messages.value = response.messages;
         data.value = response.data;
         return response.data;
       }
@@ -44,6 +45,7 @@ export default function useCRUD() {
     try {
       const response = await BaseService.create(endpoint, payload);
       messages.value = response.messages;
+      data.value = response.data;
       return response.success;
     } catch (err) {
       error.value = err;
@@ -64,5 +66,19 @@ export default function useCRUD() {
       loading.value = false;
     }
   };
-  return { getAll, getOne, create, update, loading, error, messages, data };
+  const deleteOne = async (endpoint, id, payload = null) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await BaseService.deleteOne(endpoint, id, payload);
+      data.value = response.data;
+      messages.value = response.messages;
+      return response.success;
+    } catch (err) {
+      error.value = err;
+    } finally {
+      loading.value = false;
+    }
+  };
+  return { getAll, getOne, create, update, deleteOne, loading, error, messages, data };
 }

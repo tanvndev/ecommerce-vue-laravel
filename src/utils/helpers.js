@@ -26,4 +26,17 @@ const resizeImage = (image, width, height) => {
   return image;
 };
 
-export { debounce, resizeImage };
+const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+const getFileNameFromUrl = (url) => {
+  const parts = url.split('/');
+  return parts[parts.length - 1];
+};
+export { debounce, resizeImage, getBase64, getFileNameFromUrl };

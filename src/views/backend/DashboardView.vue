@@ -1,18 +1,11 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        Dashboard
-
-        <a-button type="primary" @click="showFileManager">Show File Manager</a-button>
-      </div>
+      <div class="container mx-auto h-screen">Dashboard</div>
     </template>
   </MasterLayout>
 </template>
 
 <script setup>
-import { inject } from 'vue';
-import MasterLayout from '@/components/backend/layouts/MasterLayout.vue';
-
-const showFileManager = inject('showFileManager');
+import { MasterLayout } from '@/components/backend/';
 </script>

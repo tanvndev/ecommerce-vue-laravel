@@ -12,3 +12,4 @@ export { default as HeaderComponent } from './layouts/HeaderComponent.vue';
 export { default as MasterLayout } from './layouts/MasterLayout.vue';
 export { default as SidebarComponent } from './layouts/SidebarComponent.vue';
 export { default as FileManager } from './layouts/FileManager.vue';
+export { default as LoadingIndicator } from './layouts/LoadingIndicator.vue';

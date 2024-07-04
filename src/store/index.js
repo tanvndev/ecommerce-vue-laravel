@@ -1,5 +1,5 @@
 import { createStore } from 'vuex';
-import { authStore, languageStore, antStore, finderStore } from '@/store/modules/';
+import { authStore, languageStore, antStore, finderStore, loadingStore } from '@/store/modules/';
 
 // Create a new store instance.
 const store = createStore({
@@ -7,7 +7,8 @@ const store = createStore({
     antStore, // toast ant
     authStore,
     languageStore,
-    finderStore
+    finderStore,
+    loadingStore
   }
 });
 

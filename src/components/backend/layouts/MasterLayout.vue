@@ -1,4 +1,5 @@
 <template>
+  <LoadingIndicator v-if="isLoading" />
   <div class="flex h-screen">
     <SidebarComponent />
     <div class="flex w-full flex-1 flex-col">
@@ -11,7 +12,7 @@
 </template>
 
 <script setup>
-import { SidebarComponent, HeaderComponent } from '@/components/backend';
+import { SidebarComponent, HeaderComponent, LoadingIndicator } from '@/components/backend';
 import { useStore } from 'vuex';
 import { useAntToast } from '@/utils/antToast';
 import { computed, watchEffect } from 'vue';
@@ -19,6 +20,7 @@ import { computed, watchEffect } from 'vue';
 const { showMessage } = useAntToast();
 const store = useStore();
 const isShowToast = computed(() => store.getters['antStore/getIsShow']);
+const isLoading = computed(() => store.getters['loadingStore/getIsLoading']);
 
 watchEffect(() => {
   if (isShowToast.value) {

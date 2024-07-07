@@ -17,6 +17,9 @@
     <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
       <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal>
+    <a-input type="hidden" :name="props.name" v-model:value="value" />
+
+    <span class="mt-[6px] block text-[12px] text-red-500">{{ errorMessage }}</span>
   </div>
 
   <FileManager
@@ -27,9 +30,10 @@
   />
 </template>
 <script setup>
-import { defineProps, defineEmits, ref, watch, computed, onMounted } from 'vue';
+import { useField } from 'vee-validate';
+import { defineProps, ref, watch, computed, onMounted } from 'vue';
 import { FileManager } from '@/components/backend';
-import { getBase64, getFileNameFromUrl, getImageToAnt } from '@/utils/helpers';
+import { getBase64, getFileNameFromUrl, getImageToAnt, isJSONString } from '@/utils/helpers';
 
 const isVisibleFileManager = ref(false);
 const previewVisible = ref(false);
@@ -37,31 +41,31 @@ const previewImage = ref('');
 const previewTitle = ref('');
 const fileList = ref([]);
 
-const emits = defineEmits(['onFiles']);
 const props = defineProps({
+  name: {
+    type: String,
+    required: true
+  },
   multipleFile: {
     type: [Boolean, String],
     default: false
-  },
-  fileListOld: {
-    type: [Array, String, Object],
-    default: null
   }
 });
 
 onMounted(() => {
-  if (props.fileListOld) {
-    try {
-      const files = getImageToAnt(JSON.parse(props.fileListOld));
-      fileList.value = files;
-    } catch (error) {
-      console.error('Error parsing fileListOld:', error);
+  watch(value, () => {
+    if (value.value) {
+      if (isJSONString(value.value)) {
+        fileList.value = getImageToAnt(JSON.parse(value.value));
+      } else {
+        fileList.value = getImageToAnt(value.value);
+      }
     }
-  }
+  });
 });
 
-watch(fileList, (newFile, oldFile) => {
-  emits('onFiles', newFile);
+watch(fileList, (newFiles) => {
+  handleSetFileToValue(newFiles);
 });
 
 const hanleMultipleFile = computed(() => {
@@ -88,7 +92,16 @@ const handleSelectFile = (files) => {
       }
     });
   }
-  emits('onFiles', fileList.value);
+  handleSetFileToValue(fileList.value);
+};
+
+const handleSetFileToValue = (files) => {
+  if (files.length === 0) {
+    value.value = '';
+  } else {
+    const fileUrls = files.map((file) => file.url);
+    value.value = props.multipleFile ? JSON.stringify(fileUrls) : fileUrls[0];
+  }
 };
 
 const handleCancel = () => {
@@ -103,6 +116,8 @@ const handlePreview = async (file) => {
   previewVisible.value = true;
   previewTitle.value = file.name;
 };
+
+const { value, errorMessage } = useField(props.name);
 </script>
 <style scoped>
 .upload-box {

@@ -281,6 +281,7 @@ const handleDeleteFile = async (url) => {
 
 const fetchData = async (payload = null) => {
   await getAll('uploads', payload);
+  if (!data.value) return;
   pagination.total = data.value.total;
   pagination.pageSize = data.value.per_page;
   pagination.current = data.value.current_page;

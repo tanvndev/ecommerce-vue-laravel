@@ -43,13 +43,7 @@
                     <label for="image" class="mb-2 block text-sm font-medium text-gray-900"
                       >Ảnh đại diện</label
                     >
-                    <InputFinderComponent
-                      v-if="id && data"
-                      :multipleFile="false"
-                      @onFiles="onFiles"
-                      :fileListOld="data?.image"
-                    />
-                    <InputFinderComponent v-else :multipleFile="false" @onFiles="onFiles" />
+                    <InputFinderComponent :multipleFile="false" name="image" />
                   </a-col>
                 </a-row>
               </a-card>
@@ -117,7 +111,6 @@ import {
 } from '@/components/backend';
 import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
-import { getFileFromFileList } from '@/utils/helpers';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatMessages } from '@/utils/format';
 import * as yup from 'yup';
@@ -154,7 +147,6 @@ const { handleSubmit, setValues, setFieldValue } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
   const response =
     id.value && id.value > 0
       ? await update(endpoint, id.value, values)
@@ -166,12 +158,6 @@ const onSubmit = handleSubmit(async (values) => {
   error.value = {};
   router.push({ name: 'user.index' });
 });
-
-const onFiles = (files) => {
-  if (files && files.length > 0) {
-    setFieldValue('image', getFileFromFileList(files));
-  }
-};
 
 const getCatalogues = async () => {
   await getAll('users/catalogues');

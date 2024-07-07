@@ -9,7 +9,6 @@ const debounce = (func, delay) => {
 };
 
 const resizeImage = (image, width, height) => {
-  image = JSON.parse(image)[0];
   const params = [];
 
   if (width) {
@@ -50,18 +49,50 @@ const getFileFromFileList = (fileList) => {
 };
 
 const getImageToAnt = (images) => {
-  const data = [];
-  images.forEach((image) => {
-    const fileName = getFileNameFromUrl(image);
-    data.push({
-      uid: fileName,
-      name: fileName,
+  if (!images) return [];
+
+  // Kiểm tra nếu images là một chuỗi
+  if (typeof images === 'string') {
+    const fileName = getFileNameFromUrl(images);
+    return [
+      {
+        uid: fileName,
+        name: fileName,
+        status: 'done',
+        url: images
+      }
+    ];
+  }
+
+  // Kiểm tra nếu images là một mảng
+  if (Array.isArray(images)) {
+    return images.map((image) => ({
+      uid: getFileNameFromUrl(image),
+      name: getFileNameFromUrl(image),
       status: 'done',
       url: image
-    });
-  });
+    }));
+  }
 
-  return data;
+  // Trường hợp còn lại, trả về mảng rỗng
+  return [];
 };
 
-export { debounce, resizeImage, getBase64, getFileNameFromUrl, getFileFromFileList, getImageToAnt };
+const isJSONString = (str) => {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export {
+  debounce,
+  resizeImage,
+  getBase64,
+  getFileNameFromUrl,
+  getFileFromFileList,
+  getImageToAnt,
+  isJSONString
+};

@@ -1,5 +1,5 @@
 <template>
-  <label :for="props.name" :class="props.labelClass"
+  <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
   >
@@ -34,7 +34,7 @@ const props = defineProps({
   },
   label: {
     type: String,
-    required: true
+    default: ''
   },
   labelClass: {
     type: String,

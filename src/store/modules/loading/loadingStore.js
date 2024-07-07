@@ -10,7 +10,6 @@ const getters = {
 // actions
 const actions = {
   startLoading({ commit }) {
-    console.log(123);
     commit('setLoading', true);
   },
   stopLoading({ commit }) {

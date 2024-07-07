@@ -5,92 +5,100 @@
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
-            <a-col :span="12">
-              <a-card class="mt-3">
+            <a-col :span="18">
+              <a-card class="mt-3" title="Thông tin sản phẩm">
                 <AleartError :errors="error" />
                 <a-row :gutter="[16, 10]">
-                  <a-col :span="12">
-                    <InputComponent label="Họ tên thành viên" :required="true" name="fullname" />
+                  <a-col :span="24">
+                    <InputComponent label="Tiêu đề sản phẩm" :required="true" name="name" />
                   </a-col>
-
-                  <a-col :span="12">
-                    <InputComponent label="Địa chỉ email" :required="true" name="email" />
-                  </a-col>
-
-                  <a-col :span="12">
-                    <InputComponent label="Số điện thoại" :required="true" name="phone" />
-                  </a-col>
-
-                  <a-col :span="12" v-if="!id">
-                    <InputComponent
-                      type="password"
-                      label="Mật khẩu"
-                      :required="true"
-                      name="password"
-                    />
-                  </a-col>
-
-                  <a-col :span="12">
-                    <SelectComponent
-                      label="Nhóm thành viên"
-                      name="user_catalogue_id"
-                      placeholder="Chọn nhóm thành viên"
-                      :options="userCatalogues"
-                      :required="true"
-                    />
-                  </a-col>
-                  <a-col :span="!id ? 12 : 24">
-                    <label for="image" class="mb-2 block text-sm font-medium text-gray-900"
-                      >Ảnh đại diện</label
-                    >
-                    <InputFinderComponent
-                      v-if="id && data"
-                      :multipleFile="false"
-                      @onFiles="onFiles"
-                      :fileListOld="data?.image"
-                    />
-                    <InputFinderComponent v-else :multipleFile="false" @onFiles="onFiles" />
+                  <a-col :span="24">
+                    <EditorComponent name="description" label="Mô tả sản phẩm" />
                   </a-col>
                 </a-row>
               </a-card>
-            </a-col>
-            <a-col :span="12">
+
+              <!-- Du lieu san pham -->
               <a-card class="mt-3">
+                <template #title>
+                  <span> Dữ liệu sản phẩm </span>
+                </template>
                 <AleartError :errors="error" />
-                <a-row :gutter="[16, 15]">
-                  <a-col :span="8">
-                    <SelectComponent
-                      label="Quận/Thành phố"
-                      name="province_id"
-                      placeholder="Chọn Tỉnh/Thành phố"
-                      :options="provinces"
-                      @onChange="getLocation('districts', $event)"
-                    />
-                  </a-col>
-
-                  <a-col :span="8">
-                    <SelectComponent
-                      label="Quận/Huyện"
-                      name="district_id"
-                      placeholder="Chọn Quận/Huyện"
-                      :options="districts"
-                      @onChange="getLocation('wards', $event)"
-                    />
-                  </a-col>
-
-                  <a-col :span="8">
-                    <SelectComponent
-                      label="Phường/Xã"
-                      name="ward_id"
-                      placeholder="Chọn Phường/Xã"
-                      :options="wards"
-                    />
+                <a-row :gutter="[16, 10]">
+                  <a-col :span="12">
+                    <SelectComponent name="product_type" label="Loại sản phẩm" :required="true" />
                   </a-col>
 
                   <a-col :span="24">
-                    <InputComponent label="Địa chỉ" name="address" />
+                    <a-tabs v-model:activeKey="activeKey" tab-position="top">
+                      <a-tab-pane key="1">
+                        <template #tab>
+                          <span>
+                            <i class="fas fa-wrench mr-1"></i>
+                            Chung
+                          </span>
+                        </template>
+                        <div>Chung</div>
+                      </a-tab-pane>
+                      <a-tab-pane key="2">
+                        <template #tab>
+                          <span>
+                            <i class="far fa-dolly-flatbed-alt mr-1"></i>
+                            Kiểm kê kho hàng
+                          </span>
+                        </template>
+                        <div>Kiểm kê kho hàng</div>
+                      </a-tab-pane>
+                      <a-tab-pane key="3">
+                        <template #tab>
+                          <span>
+                            <i class="fas fa-link mr-1"></i>
+                            Các sản phẩm được kết nối
+                          </span>
+                        </template>
+                        <div>Các sản phẩm được kết nối</div>
+                      </a-tab-pane>
+                      <a-tab-pane key="4">
+                        <template #tab>
+                          <span>
+                            <i class="fas fa-tasks-alt mr-1"></i>
+                            Các thuộc tính
+                          </span>
+                        </template>
+                        <div>Các thuộc tính</div>
+                      </a-tab-pane>
+                      <a-tab-pane key="5">
+                        <template #tab>
+                          <span>
+                            <i class="far fa-table mr-1"></i>
+                            Các biến thể
+                          </span>
+                        </template>
+                        <div>Các biến thể</div>
+                      </a-tab-pane>
+                    </a-tabs>
                   </a-col>
                 </a-row>
+              </a-card>
+
+              <!-- Mo ta ngan san pham -->
+              <a-card class="mt-3" title="Mô tả ngắn của sản phẩm">
+                <InputComponent name="short_description" typeInput="textarea" />
+              </a-card>
+            </a-col>
+
+            <!-- Sidebar right -->
+            <a-col :span="6">
+              <a-card class="mt-3" title="Ảnh sản phẩm">
+                <InputFinderComponent />
+              </a-card>
+
+              <a-card class="mt-3" title="Thư viện sản phẩm">
+                <InputFinderComponent :multipleFile="true" />
+              </a-card>
+
+              <a-card class="mt-3" title="Danh mục sản phẩm">
+                <SelectComponent name="product_catalogue_id" />
               </a-card>
             </a-col>
           </a-row>
@@ -113,7 +121,9 @@ import {
   BreadcrumbComponent,
   AleartError,
   InputComponent,
-  SelectComponent
+  SelectComponent,
+  EditorComponent,
+  InputFinderComponent
 } from '@/components/backend';
 import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
@@ -123,15 +133,14 @@ import { formatDataToSelect, formatMessages } from '@/utils/format';
 import * as yup from 'yup';
 import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
-import InputFinderComponent from '@/components/backend/includes/InputFinderComponent.vue';
 
+const activeKey = ref('1');
 const pageTitle = ref('Thêm mới thành viên');
 const error = ref({});
 const userCatalogues = ref([]);
 const endpoint = 'users';
 const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
-const { getProvinces, getLocations, provinces, districts, wards } = useLocation();
 
 const id = computed(() => router.currentRoute.value.params.id || null);
 
@@ -173,23 +182,6 @@ const onFiles = (files) => {
   }
 };
 
-const getCatalogues = async () => {
-  await getAll('users/catalogues');
-  userCatalogues.value = formatDataToSelect(data.value);
-};
-
-const getLocation = async (target, location_id) => {
-  if (target === 'districts') {
-    setFieldValue('district_id', null);
-    setFieldValue('ward_id', null);
-  } else if (target === 'wards') {
-    setFieldValue('ward_id', null);
-  }
-  if (location_id && target) {
-    await getLocations(target, location_id);
-  }
-};
-
 const fetchOne = async () => {
   await getOne(endpoint, id.value);
   setValues({
@@ -210,7 +202,5 @@ onMounted(async () => {
     fetchOne();
     pageTitle.value = 'Cập nhập thành viên.';
   }
-  getCatalogues();
-  getProvinces();
 });
 </script>

@@ -69,10 +69,10 @@ import { useCRUD, usePagination } from '@/composables';
 
 // Data static
 const pageTitle = 'Danh sách thành viên';
-const modelName = 'User';
-const routeCreate = 'user.store';
-const routeUpdate = 'user.update';
-const endpoint = 'users';
+const modelName = 'Product';
+const routeCreate = 'product.store';
+const routeUpdate = 'product.update';
+const endpoint = 'products';
 const columns = [
   {
     title: 'Tên thành viên',

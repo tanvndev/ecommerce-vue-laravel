@@ -6,12 +6,23 @@
         <form @submit.prevent="onSubmit">
           <a-card class="mt-3">
             <AleartError :errors="errors" />
-            <a-row :gutter="16">
+            <a-row :gutter="[16, 10]">
               <a-col :span="12">
-                <InputComponent name="name" label="Tên nhóm thành viên" :required="true" />
+                <InputComponent name="name" label="Tên nhóm sản phẩm" :required="true" />
               </a-col>
               <a-col :span="12">
-                <InputComponent name="description" label="Mô tả thành viên" :required="true" />
+                <InputComponent
+                  name="code"
+                  label="Mã nhóm sản phẩm"
+                  placeholder="Tự động tạo nếu không nhập."
+                />
+              </a-col>
+              <a-col :span="24">
+                <InputComponent
+                  typeInput="textarea"
+                  name="description"
+                  label="Mô tả nhóm sản phẩm"
+                />
               </a-col>
             </a-row>
           </a-card>
@@ -43,17 +54,16 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
-const pageTitle = ref('Thêm mới nhóm thành viên');
+const pageTitle = ref('Thêm mới nhóm sản phẩm');
 const errors = ref({});
 const store = useStore();
-const endpoint = 'users/catalogues';
+const endpoint = 'products/catalogues';
 const { getOne, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({
-    name: yup.string().required('Tên nhóm thành viên không được để trống.'),
-    description: yup.string().required('Mô tả nhóm thành viên không được để trống.')
+    name: yup.string().required('Tên nhóm sản phẩm không được để trống.')
   })
 });
 
@@ -68,17 +78,17 @@ const onSubmit = handleSubmit(async (values) => {
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
   errors.value = {};
-  router.push({ name: 'user.catalogue.index' });
+  router.push({ name: 'product.catalogue.index' });
 });
 
 const fetchOne = async () => {
   await getOne(endpoint, id.value);
-  setValues({ name: data.value.name, description: data.value.description });
+  setValues({ name: data.value.name, description: data.value.description, code: data.value.code });
 };
 
 onMounted(() => {
   if (id.value && id.value > 0) {
-    pageTitle.value = 'Cập nhập nhóm thành viên.';
+    pageTitle.value = 'Cập nhập nhóm sản phẩm.';
     fetchOne();
   }
 });

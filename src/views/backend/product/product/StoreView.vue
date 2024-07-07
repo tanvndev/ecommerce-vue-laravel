@@ -5,7 +5,7 @@
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
-            <a-col :span="18">
+            <a-col :span="17">
               <a-card class="mt-3" title="Thông tin sản phẩm">
                 <AleartError :errors="error" />
                 <a-row :gutter="[16, 10]">
@@ -88,13 +88,13 @@
             </a-col>
 
             <!-- Sidebar right -->
-            <a-col :span="6">
+            <a-col :span="7">
               <a-card class="mt-3" title="Ảnh sản phẩm">
-                <InputFinderComponent />
+                <InputFinderComponent name="image" />
               </a-card>
 
               <a-card class="mt-3" title="Thư viện sản phẩm">
-                <InputFinderComponent :multipleFile="true" />
+                <InputFinderComponent :multipleFile="true" name="album" />
               </a-card>
 
               <a-card class="mt-3" title="Danh mục sản phẩm">
@@ -127,7 +127,6 @@ import {
 } from '@/components/backend';
 import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
-import { getFileFromFileList } from '@/utils/helpers';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatMessages } from '@/utils/format';
 import * as yup from 'yup';
@@ -175,12 +174,6 @@ const onSubmit = handleSubmit(async (values) => {
   error.value = {};
   router.push({ name: 'user.index' });
 });
-
-const onFiles = (files) => {
-  if (files && files.length > 0) {
-    setFieldValue('image', getFileFromFileList(files));
-  }
-};
 
 const fetchOne = async () => {
   await getOne(endpoint, id.value);

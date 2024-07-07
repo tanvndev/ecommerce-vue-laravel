@@ -103,7 +103,7 @@ const columns = [
     title: 'Thực thi',
     dataIndex: 'action',
     key: 'action',
-    width: '4%'
+    width: '6%'
   }
 ];
 

@@ -1,7 +1,8 @@
 <template>
   <div class="clearfix">
-    <a-space class="items-start">
+    <a-space>
       <a-upload
+        v-if="fileList.length"
         v-model:file-list="fileList"
         :before-upload="() => false"
         list-type="picture-card"
@@ -9,11 +10,11 @@
         @change="handleSelectFile"
       >
       </a-upload>
-      <div @click="isVisibleFileManager = true" class="upload-box" v-if="hanleMultipleFile">
-        <i class="fal fa-plus"></i>
-        <div class="mt-2 text-sm">Tải tệp</div>
-      </div>
     </a-space>
+    <div @click="isVisibleFileManager = true" class="upload-box" v-if="hanleMultipleFile">
+      <i class="fal fa-plus"></i>
+      <div class="mt-2 text-sm">Tải tệp</div>
+    </div>
     <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
       <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal>

@@ -118,13 +118,13 @@ import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
 import InputFinderComponent from '@/components/backend/includes/InputFinderComponent.vue';
 
-const pageTitle = ref('Thêm mới thành viên');
-const error = ref({});
-const userCatalogues = ref([]);
-const endpoint = 'users';
 const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
 const { getProvinces, getLocations, provinces, districts, wards } = useLocation();
+const endpoint = 'users';
+const pageTitle = ref('Thêm mới thành viên');
+const error = ref({});
+const userCatalogues = ref([]);
 
 const id = computed(() => router.currentRoute.value.params.id || null);
 

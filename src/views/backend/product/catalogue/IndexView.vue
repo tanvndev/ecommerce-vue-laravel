@@ -1,4 +1,3 @@
-// User catalogue index
 <template>
   <MasterLayout>
     <template #template>
@@ -69,30 +68,25 @@ import {
 import { useCRUD, usePagination } from '@/composables';
 
 // Data static
-const pageTitle = 'Danh sách nhóm thành viên';
-const modelName = 'UserCatalogue';
-const routeCreate = 'user.catalogue.store';
-const routeUpdate = 'user.catalogue.update';
-const endpoint = 'users/catalogues';
+const pageTitle = 'Danh sách nhóm sản phẩm';
+const modelName = 'ProductCatalogue';
+const routeCreate = 'product.catalogue.store';
+const routeUpdate = 'product.catalogue.update';
+const endpoint = 'products/catalogues';
 const columns = [
   {
-    title: 'Tên nhóm thành viên',
+    title: 'Tên nhóm sản phẩm',
     dataIndex: 'name',
     key: 'name',
     sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
-    title: 'Số thành viên',
-    dataIndex: 'users_count',
-    key: 'users_count',
-    sorter: (a, b) => a.users_count - b.users_count
+    title: 'Mã nhóm sản phẩm',
+    dataIndex: 'code',
+    key: 'code',
+    sorter: (a, b) => a.code.localeCompare(b.code)
   },
-  {
-    title: 'Mô tả',
-    dataIndex: 'description',
-    key: 'description',
-    sorter: (a, b) => a.description.localeCompare(b.description)
-  },
+
   {
     title: 'Tình trạng',
     dataIndex: 'publish',
@@ -103,7 +97,7 @@ const columns = [
     title: 'Thực thi',
     dataIndex: 'action',
     key: 'action',
-    width: '4%'
+    width: '6%'
   }
 ];
 

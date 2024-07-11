@@ -7,8 +7,9 @@
     <QuillEditor
       :name="props.name"
       :id="props.name"
-      v-model:value="value"
+      v-model:content="value"
       theme="snow"
+      contentType="html"
       toolbar="full"
     />
     <span class="mt-[6px] block text-[12px] text-red-500">{{ errorMessage }}</span>

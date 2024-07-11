@@ -4,43 +4,45 @@
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
   >
   <div>
-    <a-input
-      v-if="props.typeInput == 'text' && props.type != 'password'"
+    <a-date-picker
+      v-if="props.typeInput === 'date'"
       v-model:value="value"
       :class="className"
       :id="props.name"
-      :type="props.type"
-      :placeholder="props.placeholder"
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
+      :show-time="props.showTime"
     />
-
-    <a-input-password
-      v-if="props.typeInput == 'text' && props.type == 'password'"
+    <a-range-picker
+      v-if="props.typeInput === 'date-range'"
       v-model:value="value"
       :class="className"
       :id="props.name"
-      :type="props.type"
-      :placeholder="props.placeholder"
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
+      :show-time="props.showTime"
     />
-
-    <a-textarea
-      v-if="props.typeInput == 'textarea'"
+    <a-time-picker
+      v-if="props.typeInput === 'time'"
       v-model:value="value"
       :class="className"
       :id="props.name"
-      :type="props.type"
-      :placeholder="props.placeholder"
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
-      :auto-size="{ minRows: 2, maxRows: 50 }"
-      show-count
-      :maxlength="props.maxlength"
+      :show-time="props.showTime"
+    />
+    <a-time-range-picker
+      v-if="props.typeInput === 'time-range'"
+      v-model:value="value"
+      :class="className"
+      :id="props.name"
+      :status="errorMessage ? 'error' : ''"
+      :size="props.size"
+      :allowClear="true"
+      :show-time="props.showTime"
     />
 
     <span class="mt-[6px] block text-[12px] text-red-500">{{ errorMessage }}</span>
@@ -49,11 +51,12 @@
 
 <script setup>
 import { useField } from 'vee-validate';
+import { watchEffect } from 'vue';
 
 const props = defineProps({
   typeInput: {
     type: String,
-    default: 'text'
+    default: 'date'
   },
   required: {
     type: [Boolean, String],
@@ -73,26 +76,23 @@ const props = defineProps({
   },
   className: {
     type: String,
-    default: ''
+    default: 'w-full'
   },
-  type: {
-    type: String,
-    default: 'text'
-  },
-  placeholder: {
-    type: String,
-    default: ''
-  },
+
   size: {
     type: String,
     default: 'large'
   },
-  maxlength: {
-    type: [String, Number, Boolean],
-    default: 0
+  showTime: {
+    type: Boolean,
+    default: false
   }
 });
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
+
+watchEffect(() => {
+  console.log(value.value); // Lấy giá trị hiện tại của input
+});
 </script>

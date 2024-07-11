@@ -8,6 +8,9 @@ export { default as ActionComponent } from './includes/ActionComponent.vue';
 export { default as SelectComponent } from './includes/SelectComponent.vue';
 export { default as InputFinderComponent } from './includes/InputFinderComponent.vue';
 export { default as EditorComponent } from './includes/EditorComponent.vue';
+export { default as InputNumberComponent } from './includes/InputNumberComponent.vue';
+export { default as SwitchComponent } from './includes/SwitchComponent.vue';
+export { default as InputDateComponent } from './includes/InputDateComponent.vue';
 
 export { default as HeaderComponent } from './layouts/HeaderComponent.vue';
 export { default as MasterLayout } from './layouts/MasterLayout.vue';

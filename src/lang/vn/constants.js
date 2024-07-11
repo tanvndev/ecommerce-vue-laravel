@@ -5,4 +5,15 @@ const PUBLISH = {
 };
 
 const PAGESIZE = ['10', '20', '30', '50', '100'];
-export { PUBLISH, PAGESIZE };
+
+const PRODUCT_TYPE = [
+  {
+    value: 'simple',
+    label: 'Sản phẩm đơn giản'
+  },
+  {
+    value: 'variable',
+    label: 'Sản phẩm có biến thể'
+  }
+];
+export { PUBLISH, PAGESIZE, PRODUCT_TYPE };

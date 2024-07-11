@@ -4,45 +4,17 @@
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
   >
   <div>
-    <a-input
-      v-if="props.typeInput == 'text' && props.type != 'password'"
+    <a-input-number
       v-model:value="value"
       :class="className"
       :id="props.name"
-      :type="props.type"
       :placeholder="props.placeholder"
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
+      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+      :parser="(value) => value.replace(/\\s?|(,*)/g, '')"
     />
-
-    <a-input-password
-      v-if="props.typeInput == 'text' && props.type == 'password'"
-      v-model:value="value"
-      :class="className"
-      :id="props.name"
-      :type="props.type"
-      :placeholder="props.placeholder"
-      :status="errorMessage ? 'error' : ''"
-      :size="props.size"
-      :allowClear="true"
-    />
-
-    <a-textarea
-      v-if="props.typeInput == 'textarea'"
-      v-model:value="value"
-      :class="className"
-      :id="props.name"
-      :type="props.type"
-      :placeholder="props.placeholder"
-      :status="errorMessage ? 'error' : ''"
-      :size="props.size"
-      :allowClear="true"
-      :auto-size="{ minRows: 2, maxRows: 50 }"
-      show-count
-      :maxlength="props.maxlength"
-    />
-
     <span class="mt-[6px] block text-[12px] text-red-500">{{ errorMessage }}</span>
   </div>
 </template>
@@ -73,12 +45,9 @@ const props = defineProps({
   },
   className: {
     type: String,
-    default: ''
+    default: 'w-full'
   },
-  type: {
-    type: String,
-    default: 'text'
-  },
+
   placeholder: {
     type: String,
     default: ''
@@ -86,10 +55,6 @@ const props = defineProps({
   size: {
     type: String,
     default: 'large'
-  },
-  maxlength: {
-    type: [String, Number, Boolean],
-    default: 0
   }
 });
 
